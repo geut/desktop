@@ -48,6 +48,12 @@ const StyledAvatar = styled(Avatar)`
   }
 `
 
+const Paragraph = styled.p`
+  a {
+    display: inline;
+  }
+`
+
 const dialogs = [
   ({ page, next }) => (
     <>
@@ -56,16 +62,16 @@ const dialogs = [
         <IllustrationWelcome />
       </Illustration>
       <Heading>Welcome to Hypergraph</Heading>
-      <p>
-        At <Anchor href='https://libscie.org' inParagraph>Liberate Science</Anchor>, we
+      <Paragraph>
+        At <Anchor href='https://libscie.org'>Liberate Science</Anchor>, we
         reinvent the publication process in a way that empowers you to do better
         research. Research that is transparent and accessible to everyone, free
         from time-consuming bureaucracy and centralized control.
-      </p>
-      <p>
+      </Paragraph>
+      <Paragraph>
         Let us explain some of the basic concepts of Hypergraph before you get
         started...
-      </p>
+      </Paragraph>
       <Form onSubmit={next}>
         <Button emphasis='top' autoFocus>
           Next
@@ -80,16 +86,16 @@ const dialogs = [
         <IllustrationAsYouGo />
       </Illustration>
       <Heading>As-you-go, not after-the-fact</Heading>
-      <p>
+      <Paragraph>
         You are probably used to doing research, writing a full paper, and then
         going through the laborious process of finding a journal. With
         Hypergraph, you can publish each step of your research as-you-go.
-      </p>
-      <p>
+      </Paragraph>
+      <Paragraph>
         As-you-go publishing increases the value of your work by making it
         available to others as soon as you feel ready. It also breaks down the
         research process into bite-size chunks. 🍰
-      </p>
+      </Paragraph>
       <Form onSubmit={next}>
         <Button emphasis='top' autoFocus>
           Next
@@ -104,16 +110,16 @@ const dialogs = [
         <IllustrationAsYouGo2 />
       </Illustration>
       <Heading>How Hypergraph works</Heading>
-      <p>
+      <Paragraph>
         Each part of your research is its own publication, whether it's a
         proposal, a literature study, a data set, or a conclusion. You link them
         together as you go along, to create a connected body of work.
-      </p>
-      <p>
+      </Paragraph>
+      <Paragraph>
         This makes it much easier to do replications or multiple interpretations
         with the same source material - even if someone else created it. You
         just link your content to the existing content and there you go! 🌈
-      </p>
+      </Paragraph>
       <Form onSubmit={next}>
         <Button emphasis='top' autoFocus color={green}>
           Create Profile
@@ -132,12 +138,12 @@ const dialogs = [
           <StyledAvatar name={nameForAvatar} />
         </Illustration>
         <Heading>What should we call you?</Heading>
-        <p>
+        <Paragraph>
           Time to create a profile! This is where your published work is
           displayed. You can share your profile with others to show them your
           research.
-        </p>
-        <p>Now, what name should we display on your work?</p>
+        </Paragraph>
+        <Paragraph>Now, what name should we display on your work?</Paragraph>
         <Form
           onSubmit={e => {
             e.preventDefault()
@@ -168,20 +174,20 @@ const dialogs = [
           <IllustrationVault />
         </Illustration>
         <Heading>Introducing the Vault</Heading>
-        <p>
+        <Paragraph>
           We use peer-to-peer technology: Hypergraph is powered by the people
           using it! Share your content as you'd like, without anybody getting in
           between.
-        </p>
-        <p>
+        </Paragraph>
+        <Paragraph>
           Hypergraph Vault makes your work available even when your computer is
           offline. Plus, we're working with libraries on archiving it for future
           generations! 👵🏾👨🏻👶
-        </p>
-        <p>
+        </Paragraph>
+        <Paragraph>
           Until January 1st, 2021, Hypergraph Vault is free, while we figure out
           the costs.
-        </p>
+        </Paragraph>
         <Form onSubmit={next}>
           <Button emphasis='top' autoFocus>
             Next
@@ -200,32 +206,32 @@ const dialogs = [
           <IllustrationLibscie />
         </Illustration>
         <Heading>One last thing</Heading>
-        <p>
+        <Paragraph>
           Liberate Science is on a mission to reset research work. We would love
           it if you'd join us! 💜
-        </p>
-        <p>
+        </Paragraph>
+        <Paragraph>
           Read our manifesto. Check out our{' '}
-          <Anchor href='https://libscie.org' inParagraph>website</Anchor>,{' '}
-          <Anchor href='https://blog.libscie.org' inParagraph>blog</Anchor>,{' '}
-          <Anchor href='https://twitter.com/libscie' inParagraph>Twitter</Anchor>, or{' '}
-          <Anchor href='https://github.com/hypergraph-xyz/desktop' inParagraph>
+          <Anchor href='https://libscie.org'>website</Anchor>,{' '}
+          <Anchor href='https://blog.libscie.org'>blog</Anchor>,{' '}
+          <Anchor href='https://twitter.com/libscie'>Twitter</Anchor>, or{' '}
+          <Anchor href='https://github.com/hypergraph-xyz/desktop'>
             GitHub
           </Anchor>
           . Sign up for our{' '}
-          <Anchor href='https://www.libscie.org/#newsletter' inParagraph>newsletter</Anchor>{' '}
+          <Anchor href='https://www.libscie.org/#newsletter'>newsletter</Anchor>{' '}
           or{' '}
-          <Anchor href='https://chrishartgerink.typeform.com/to/VNfDMq' inParagraph>
+          <Anchor href='https://chrishartgerink.typeform.com/to/VNfDMq'>
             testing
           </Anchor>
           . If you're interested in becoming a supporting member, get in touch
           at{' '}
-          <Anchor href='mailto:community@libscie.org' inParagraph>
+          <Anchor href='mailto:community@libscie.org'>
             community@libscie.org
           </Anchor>
           .
-        </p>
-        <p>We're in the chat any time if you'd like to talk! 💬</p>
+        </Paragraph>
+        <Paragraph>We're in the chat any time if you'd like to talk! 💬</Paragraph>
         <Form
           onSubmit={async e => {
             e.preventDefault()
