@@ -31,6 +31,11 @@ const Heading = styled.div`
   line-height: 37px;
   margin-bottom: 24px;
 `
+const Paragraph = styled.p`
+  a {
+    display: inline;
+  }
+`
 const Back = styled(Arrow)`
   transform: rotate(270deg);
   filter: brightness(${props => (props.page === 0 ? 0 : 100)}%);
@@ -45,12 +50,6 @@ const StyledAvatar = styled(Avatar)`
   position: absolute;
   svg {
     transform: scale(0.78);
-  }
-`
-
-const Paragraph = styled.p`
-  a {
-    display: inline;
   }
 `
 
