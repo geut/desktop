@@ -8,6 +8,7 @@ const StyledAnchor = styled.a`
   color: ${props => (props.disabled ? gray : white)};
   border-bottom: 2px solid
     ${props => (props.disabled ? gray : props.color || purple)};
+  ${props => (props.inParagraph ? '' : 'display: inline-block;')}
   -webkit-app-region: no-drag;
 
   ${props =>

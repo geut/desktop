@@ -57,7 +57,7 @@ const dialogs = [
       </Illustration>
       <Heading>Welcome to Hypergraph</Heading>
       <p>
-        At <Anchor href='https://libscie.org'>Liberate Science</Anchor>, we
+        At <Anchor href='https://libscie.org' inParagraph>Liberate Science</Anchor>, we
         reinvent the publication process in a way that empowers you to do better
         research. Research that is transparent and accessible to everyone, free
         from time-consuming bureaucracy and centralized control.
@@ -206,21 +206,21 @@ const dialogs = [
         </p>
         <p>
           Read our manifesto. Check out our{' '}
-          <Anchor href='https://libscie.org'>website</Anchor>,{' '}
-          <Anchor href='https://blog.libscie.org'>blog</Anchor>,{' '}
-          <Anchor href='https://twitter.com/libscie'>Twitter</Anchor>, or{' '}
-          <Anchor href='https://github.com/hypergraph-xyz/desktop'>
+          <Anchor href='https://libscie.org' inParagraph>website</Anchor>,{' '}
+          <Anchor href='https://blog.libscie.org' inParagraph>blog</Anchor>,{' '}
+          <Anchor href='https://twitter.com/libscie' inParagraph>Twitter</Anchor>, or{' '}
+          <Anchor href='https://github.com/hypergraph-xyz/desktop' inParagraph>
             GitHub
           </Anchor>
           . Sign up for our{' '}
-          <Anchor href='https://www.libscie.org/#newsletter'>newsletter</Anchor>{' '}
+          <Anchor href='https://www.libscie.org/#newsletter' inParagraph>newsletter</Anchor>{' '}
           or{' '}
-          <Anchor href='https://chrishartgerink.typeform.com/to/VNfDMq'>
+          <Anchor href='https://chrishartgerink.typeform.com/to/VNfDMq' inParagraph>
             testing
           </Anchor>
           . If you're interested in becoming a supporting member, get in touch
           at{' '}
-          <Anchor href='mailto:community@libscie.org'>
+          <Anchor href='mailto:community@libscie.org' inParagraph>
             community@libscie.org
           </Anchor>
           .
