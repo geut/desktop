@@ -157,9 +157,8 @@ const dialogs = [
       </>
     )
   },
-  ({ page, p2p, name, setProfileUrl, previous }) => {
+  ({ page, p2p, name, setProfileUrl, setIsTourOpen, previous }) => {
     const [isLoading, setIsLoading] = useState(false)
-
     return (
       <>
         <Back page={page} onClick={() => !isLoading && previous()} />
@@ -181,6 +180,7 @@ const dialogs = [
             const profile = await p2p.init({ type: 'profile', title: name })
             console.timeEnd('init profile')
             setProfileUrl(profile.rawJSON.url)
+            setIsTourOpen(true)
           }}
         >
           <Button emphasis='top' autoFocus isLoading={isLoading}>
@@ -192,7 +192,7 @@ const dialogs = [
   }
 ]
 
-const Welcome = ({ p2p, setProfileUrl }) => {
+const Welcome = ({ p2p, setProfileUrl, setIsTourOpen }) => {
   const [page, setPage] = useState(0)
   const [name, setName] = useState()
 
@@ -213,7 +213,8 @@ const Welcome = ({ p2p, setProfileUrl }) => {
         name,
         setName,
         p2p,
-        setProfileUrl
+        setProfileUrl,
+        setIsTourOpen
       })}
     </Modal>
   )

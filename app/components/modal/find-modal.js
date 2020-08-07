@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useContext } from 'react'
 import styled, { css } from 'styled-components'
 import Modal, { Close } from './modal'
 import { Heading2, Paragraph } from '../typography'
@@ -10,6 +10,8 @@ import Loading from '../loading/loading'
 import { gray, red, yellow } from '../../lib/colors'
 import { useHistory } from 'react-router-dom'
 import { encode } from 'dat-encoding'
+import { ProfileContext, TourContext } from '../../lib/context'
+import Tour from '../tour/tour'
 
 const StyledButton = styled(Button)`
   margin-right: 0;
@@ -47,6 +49,7 @@ const FindModal = ({ onClose, prefilledUrl, p2p }) => {
   const [isLoading, setIsLoading] = useState()
   const [url, setUrl] = useState(prefilledUrl)
   const [isUnavailable, setIsUnavailable] = useState()
+  const [isTourOpen, setIsTourOpen] = useContext(TourContext)
   const inputEl = useRef()
   const clonePromise = useRef()
   const history = useHistory()
@@ -65,78 +68,94 @@ const FindModal = ({ onClose, prefilledUrl, p2p }) => {
   }
 
   return (
-    <Modal height={329} onClose={onCloseWithCleanup}>
-      <Close onClick={onCloseWithCleanup} />
-      <Heading2>Got a link?</Heading2>
-      <Paragraph>
-        Did someone send you a link for Hypergraph? Copy-paste it below and
-        we'll download their information for you to see 😊 All their files are
-        then ready for you to build on 🏗
-      </Paragraph>
-      <form
-        onSubmit={async ev => {
-          ev.preventDefault()
+    <>
+      <Modal height={329} onClose={onCloseWithCleanup}>
+        <Close onClick={onCloseWithCleanup} />
+        <Heading2>Got a link?</Heading2>
+        <Paragraph>
+          Did someone send you a link for Hypergraph? Copy-paste it below and
+          we'll download their information for you to see 😊 All their files are
+          then ready for you to build on 🏗
+        </Paragraph>
+        <form
+          onSubmit={async ev => {
+            ev.preventDefault()
 
-          if (isLoading) {
-            clonePromise.current.cancel()
-            setIsLoading(false)
-          } else {
-            setIsUnavailable(false)
-            const [key, version] = inputEl.current.value.split('+')
-            clonePromise.current = p2p.clone(encode(key), version)
-            setIsLoading(true)
-            let module
-
-            try {
-              module = await clonePromise.current
-            } catch (err) {
-              if (clonePromise.current.isCanceled) return
-              console.error(err)
-              setIsUnavailable(true)
+            if (isLoading) {
+              clonePromise.current.cancel()
               setIsLoading(false)
-              return
-            }
-
-            setIsLoading(false)
-            onClose()
-            if (module.rawJSON.type === 'profile') {
-              history.push(`/profiles/${encode(key)}`)
             } else {
-              const url = version ? `${encode(key)}/${version}` : encode(key)
-              history.push(`/contents/${url}`)
-            }
-          }
-        }}
-      >
-        <Label>
-          URL
-          {isUnavailable && (
-            <Warning>
-              <WarningEmoji>⚠️</WarningEmoji>
-              Hmm, couldn’t find this...
-            </Warning>
-          )}
-        </Label>
+              setIsUnavailable(false)
+              const [key, version] = inputEl.current.value.split('+')
+              clonePromise.current = p2p.clone(encode(key), version)
+              setIsLoading(true)
+              let module
 
-        {isLoading ? (
-          <LoadingContainer>
-            <Loading />
-          </LoadingContainer>
-        ) : (
-          <StyledInput
-            ref={inputEl}
-            isValid={isValid}
-            defaultValue={url}
-            onChange={ev => {
-              setUrl(ev.target.value)
-            }}
-          />
-        )}
-        <StyledButton content='icon' disabled={!isValid}>
-          {isLoading ? <X /> : <ArrowRight />}
-        </StyledButton>
-      </form>
-    </Modal>
+              try {
+                module = await clonePromise.current
+              } catch (err) {
+                if (clonePromise.current.isCanceled) return
+                console.error(err)
+                setIsUnavailable(true)
+                setIsLoading(false)
+                return
+              }
+
+              setIsLoading(false)
+              onClose()
+              if (module.rawJSON.type === 'profile') {
+                history.push(`/profiles/${encode(key)}`)
+              } else {
+                const url = version ? `${encode(key)}/${version}` : encode(key)
+                history.push(`/contents/${url}`)
+              }
+            }
+          }}
+        >
+          <Label>
+            URL
+            {isUnavailable && (
+              <Warning>
+                <WarningEmoji>⚠️</WarningEmoji>
+                Hmm, couldn’t find this...
+              </Warning>
+            )}
+          </Label>
+
+          {isLoading ? (
+            <LoadingContainer>
+              <Loading />
+            </LoadingContainer>
+          ) : (
+            <StyledInput
+              ref={inputEl}
+              isValid={isValid}
+              defaultValue={url}
+              onChange={ev => {
+                setUrl(ev.target.value)
+              }}
+              id='find-input'
+            />
+          )}
+          <StyledButton content='icon' disabled={!isValid}>
+            {isLoading ? <X /> : <ArrowRight />}
+          </StyledButton>
+        </form>
+      </Modal>
+      <Tour
+        steps={[
+          {
+            selector: '#find-input',
+            content: `Perhaps you already know someone using Hypergraph? Paste their profile URL here to view it. 
+            Otherwise, try this example content: hyper://d1c36fd97f224667bb6fdec0443988a03d090ed98253d13e5e851a9fcc996802.
+            ⚠ If you're getting an error message, please retry a couple of times.
+            If the profile you're looking for isn't hosted in the Vault, it could be that no one with the data is currently online.`
+          }
+        ]}
+        isOpen={isTourOpen}
+        onRequestClose={() => setIsTourOpen(false)}
+      />
+    </>
   )
 }
 

@@ -12,7 +12,7 @@ import AdmZip from 'adm-zip'
 import { Label } from '../forms/forms'
 import subtypes from '@hypergraph-xyz/wikidata-identifiers'
 import newlinesToBr from '../../lib/newlines-to-br'
-import { ProfileContext } from '../../lib/context'
+import { ProfileContext, TourContext } from '../../lib/context'
 import isContentRegistered from '../../lib/is-content-registered'
 import Share from '../icons/share.svg'
 import ShareModal from './share-modal'
@@ -116,6 +116,7 @@ const Content = ({ p2p, content, renderRow }) => {
   const [canRegisterContent, setCanRegisterContent] = useState()
   const [canDeregisterContent, setCanDeregisterContent] = useState()
   const [isSharing, setIsSharing] = useState()
+  const [isTourOpen, setIsTourOpen] = useContext(TourContext)
   const history = useHistory()
   const { url: profileUrl } = useContext(ProfileContext)
 
