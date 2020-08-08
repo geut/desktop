@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from 'react'
+import React, { useState, useRef, useContext, useEffect } from 'react'
 import styled, { css } from 'styled-components'
 import Modal, { Close } from './modal'
 import { Heading2, Paragraph } from '../typography'
@@ -10,7 +10,7 @@ import Loading from '../loading/loading'
 import { gray, red, yellow } from '../../lib/colors'
 import { useHistory } from 'react-router-dom'
 import { encode } from 'dat-encoding'
-import { ProfileContext, TourContext } from '../../lib/context'
+import { TourContext } from '../../lib/context'
 import Tour from '../tour/tour'
 
 const StyledButton = styled(Button)`
@@ -49,7 +49,7 @@ const FindModal = ({ onClose, prefilledUrl, p2p }) => {
   const [isLoading, setIsLoading] = useState()
   const [url, setUrl] = useState(prefilledUrl)
   const [isUnavailable, setIsUnavailable] = useState()
-  const [isTourOpen, setIsTourOpen] = useContext(TourContext)
+  const { tour: [isTourOpen, setIsTourOpen], modalTour: [isModalTourOpen, setIsModalTourOpen] } = useContext(TourContext)
   const inputEl = useRef()
   const clonePromise = useRef()
   const history = useHistory()
@@ -60,9 +60,20 @@ const FindModal = ({ onClose, prefilledUrl, p2p }) => {
     isValid = true
   } catch (_) {}
 
+  useEffect(() => {
+    if (isTourOpen) {
+      setIsTourOpen(false)
+      setIsModalTourOpen(true)
+    }
+  })
+
   const onCloseWithCleanup = () => {
     if (clonePromise.current) {
       clonePromise.current.cancel()
+    }
+    if (isModalTourOpen) {
+      setIsModalTourOpen(false)
+      setIsTourOpen(true)
     }
     onClose()
   }
@@ -152,8 +163,8 @@ const FindModal = ({ onClose, prefilledUrl, p2p }) => {
             If the profile you're looking for isn't hosted in the Vault, it could be that no one with the data is currently online.`
           }
         ]}
-        isOpen={isTourOpen}
-        onRequestClose={() => setIsTourOpen(false)}
+        isOpen={isModalTourOpen}
+        onRequestClose={() => setIsModalTourOpen(false)}
       />
     </>
   )

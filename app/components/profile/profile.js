@@ -11,7 +11,8 @@ import Share from '../icons/share.svg'
 import { useParams } from 'react-router-dom'
 import ShareModal from './share-modal'
 import sort from '../../lib/sort'
-import { ProfileContext } from '../../lib/context'
+import { ProfileContext, TourContext } from '../../lib/context'
+import Tour from '../tour/tour'
 
 const Header = styled.div`
   position: relative;
@@ -129,7 +130,10 @@ const Profile = ({ p2p }) => {
   const [isSharing, setIsSharing] = useState()
   const [nameForAvatar, setNameForAvatar] = useState()
   const [ownProfile, setOwnProfile] = useState()
+  const [isOwnProfile, setIsOwnProfile] = useState()
   const { url: ownProfileUrl } = useContext(ProfileContext)
+  const { tour: [isTourOpen, setIsTourOpen] } = useContext(TourContext)
+  const [tourStep, setTourStep] = useState(0)
   const titleRef = useRef()
   const descriptionRef = useRef()
 
@@ -177,6 +181,7 @@ const Profile = ({ p2p }) => {
       setContents(null)
       const profile = await p2p.clone(encode(key), null, false /* download */)
       setProfile(profile)
+      setIsOwnProfile(profile.rawJSON.url === ownProfileUrl)
       setNameForAvatar(profile.rawJSON.title)
       await fetchContents(profile)
     })()
@@ -204,7 +209,7 @@ const Profile = ({ p2p }) => {
       )}
       <TopRow>
         <Form onSubmit={onSubmit}>
-          <Title>
+          <Title id='profile-title'>
             <Indicator
               isEditing={isEditing}
               isSaving={isSaving}
@@ -253,7 +258,9 @@ const Profile = ({ p2p }) => {
                     encode(profile.rawJSON.url)
                   )
                   await fetchOwnProfile()
+                  setTourStep(6)
                 }}
+                id='profile-follow'
               >
                 Follow
               </Button>
@@ -264,7 +271,7 @@ const Profile = ({ p2p }) => {
             type='button'
             onClick={() => setIsSharing(true)}
           >
-            <Share />
+            <Share id='profile-share' />
           </Button>
           {isEditing ? (
             <>
@@ -309,6 +316,7 @@ const Profile = ({ p2p }) => {
               setIsPopulatingDescription(true)
             }
           }}
+          id='profile-description'
         >
           {isEditing ? (
             <StyledTextarea
@@ -331,7 +339,7 @@ const Profile = ({ p2p }) => {
         <Title>Content</Title>
       </StickyRow>
       {contents && (
-        <>
+        <div id='profile-content'>
           {contents.map(content => {
             return (
               <ContentRow
@@ -351,8 +359,45 @@ const Profile = ({ p2p }) => {
                 : 'No content yet... 🤔'
             }
           />
-        </>
+        </div>
       )}
+      {!isOwnProfile && <Tour
+        steps={[
+          {
+            content: `Great, you've found someone to follow! Let's take a little tour of their profile.`
+          },
+          {
+            selector: '#profile-title',
+            content: `Here is their name, which might change over time if they choose to alter it.
+            The change will even be synchronized across their existing work!`
+          },
+          {
+            selector: '#profile-description',
+            content: `Here's a space for a little bio...`
+          },
+          {
+            selector: '#profile-content',
+            content: `And here's their work, if they've added anything to their profile yet.`
+          },
+          {
+            selector: '#profile-share',
+            content: `You can also share their profile with others using this button.`
+          },
+          {
+            selector: '#profile-follow',
+            content: `Now this is what we're looking for.
+            Clicking Follow means that you'll see this researcher's content appear in your feed.
+            You can unfollow profiles at any time. Click Follow...`
+          },
+          {
+            selector: '#menu-feed',
+            content: `... and then open the feed again.`
+          }
+        ]}
+        isOpen={isTourOpen}
+        onRequestClose={() => setIsTourOpen(false)}
+        goToStep={tourStep}
+      />}
     </>
   )
 }

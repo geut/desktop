@@ -10,7 +10,7 @@ import Tour from '../tour/tour'
 export default ({ p2p }) => {
   const [contents, setContents] = useState()
   const [follows, setFollows] = useState([])
-  const [isTourOpen, setIsTourOpen] = useContext(TourContext)
+  const { tour: [isTourOpen, setIsTourOpen] } = useContext(TourContext)
   const { url: profileUrl } = useContext(ProfileContext)
 
   useEffect(() => {

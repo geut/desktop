@@ -120,6 +120,7 @@ const App = () => {
   )
   const [isFinding, setIsFinding] = useState(Boolean(findModalUrl))
   const [isTourOpen, setIsTourOpen] = useState(false)
+  const [isModalTourOpen, setIsModalTourOpen] = useState(false)
 
   useEffect(() => {
     ;(async () => {
@@ -153,7 +154,7 @@ const App = () => {
 
   return (
     <ProfileContext.Provider value={{ url: profileUrl }}>
-      <TourContext.Provider value={[isTourOpen, setIsTourOpen]}>
+      <TourContext.Provider value={{ tour: [isTourOpen, setIsTourOpen], modalTour: [isModalTourOpen, setIsModalTourOpen] }}>
         <Container onFind={() => setIsFinding(true)}>
           {isFinding && (
             <FindModal

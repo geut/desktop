@@ -116,7 +116,7 @@ const Content = ({ p2p, content, renderRow }) => {
   const [canRegisterContent, setCanRegisterContent] = useState()
   const [canDeregisterContent, setCanDeregisterContent] = useState()
   const [isSharing, setIsSharing] = useState()
-  const [isTourOpen, setIsTourOpen] = useContext(TourContext)
+  const { tour: [isTourOpen, setIsTourOpen] } = useContext(TourContext)
   const history = useHistory()
   const { url: profileUrl } = useContext(ProfileContext)
 
