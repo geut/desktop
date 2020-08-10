@@ -52,9 +52,6 @@ const RemoveFile = styled(X)`
   right: 14px;
   top: 8px;
 `
-const Info = styled.p`
-  margin-bottom: 2rem;
-`
 const StyledAnchor = styled(Anchor)`
   margin-top: calc(1rem + 5px);
 `

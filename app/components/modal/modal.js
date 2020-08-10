@@ -65,7 +65,7 @@ const StyledClose = styled(X)`
   top: 1rem;
 `
 export const Close = ({ onClick, ...props }) => {
-  const { tour: [isTourOpen, setIsTourOpen], modalTour: [isModalTourOpen, setIsModalTourOpen] } = useContext(TourContext)
+  const { tour: [, setIsTourOpen], modalTour: [isModalTourOpen, setIsModalTourOpen] } = useContext(TourContext)
   const onCloseWithTour = () => {
     if (isModalTourOpen) {
       setIsModalTourOpen(false)
