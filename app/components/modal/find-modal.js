@@ -49,7 +49,7 @@ const FindModal = ({ onClose, prefilledUrl, p2p }) => {
   const [isLoading, setIsLoading] = useState()
   const [url, setUrl] = useState(prefilledUrl)
   const [isUnavailable, setIsUnavailable] = useState()
-  const { tour: [isTourOpen, setIsTourOpen], modalTour: [isModalTourOpen, setIsModalTourOpen] } = useContext(TourContext)
+  const { modalTour: [isModalTourOpen, setIsModalTourOpen] } = useContext(TourContext)
   const inputEl = useRef()
   const clonePromise = useRef()
   const history = useHistory()
@@ -60,20 +60,11 @@ const FindModal = ({ onClose, prefilledUrl, p2p }) => {
     isValid = true
   } catch (_) {}
 
-  useEffect(() => {
-    if (isTourOpen) {
-      setIsTourOpen(false)
-      setIsModalTourOpen(true)
-    }
-  })
+
 
   const onCloseWithCleanup = () => {
     if (clonePromise.current) {
       clonePromise.current.cancel()
-    }
-    if (isModalTourOpen) {
-      setIsModalTourOpen(false)
-      setIsTourOpen(true)
     }
     onClose()
   }

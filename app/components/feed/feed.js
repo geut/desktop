@@ -93,6 +93,28 @@ export default ({ p2p }) => {
         isOpen={isTourOpen}
         onRequestClose={() => setIsTourOpen(false)}
       />}
+      {follows.length > 0 && <Tour
+        steps={(() => {
+          let steps = [{
+            content: `If you've followed someone with content on their profile, you'll see their work here now.
+            When new content arrives, your feed gets updated!.`
+          }]
+          if (contents.length) {
+            steps.push({
+              selector: '#contentrow-addcontentwithparent',
+              content: `You can click this button to add new content that follows from this.
+              Build on top of work of others or simply add the next step in your research project.`
+            })
+          }
+          steps.push({
+            selector: '#menu-profile',
+            content: `Now, let's take a look at your own profile!`
+          })
+          return steps
+        })()}
+        isOpen={isTourOpen}
+        onRequestClose={() => setIsTourOpen(false)}
+      />}
     </>
   )
 }

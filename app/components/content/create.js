@@ -200,12 +200,7 @@ const Create = ({ p2p }) => {
               </option>
             ))}
           </Select>
-          <Label htmlFor='files'>Upload files</Label>
-          <Info>
-            These files are copied to Hypergraph. If you want to work on them
-            further, you can choose to work using Hypergraph’s copies or
-            reimport the files into Hypergraph when you’re done.
-          </Info>
+          <Label htmlFor='files'>Add files</Label>
           <Button
             type='button'
             onClick={async e => {

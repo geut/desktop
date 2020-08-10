@@ -193,6 +193,7 @@ const Row = ({ p2p, content, pad, to, isParent }) => {
                 }`
               )
             }}
+            id='contentrow-addcontentwithparent'
           />
         )}
       </Tabbable>

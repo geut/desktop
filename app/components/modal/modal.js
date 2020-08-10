@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import styled from 'styled-components'
 import { purple, black } from '../../lib/colors'
 import { rgba } from 'polished'
 import X from '../icons/x-1rem.svg'
 import Tabbable from '../accessibility/tabbable'
+import { TourContext } from '../../lib/context'
 
 const Overlay = styled.div`
   position: fixed;
@@ -28,14 +29,30 @@ const StyledModal = styled.div`
   border: ${props => props.border && `2px solid ${purple}`};
   z-index: 3;
 `
-const Modal = ({ height, width, overlay, border, onClose, children }) => (
-  <>
-    <Overlay color={overlay} onClick={onClose} />
-    <StyledModal height={height} width={width} border={border}>
-      {children}
-    </StyledModal>
-  </>
-)
+const Modal = ({ height, width, overlay, border, onClose, children }) => {
+  const { tour: [isTourOpen, setIsTourOpen], modalTour: [isModalTourOpen, setIsModalTourOpen] } = useContext(TourContext)
+  useEffect(() => {
+    if (isTourOpen) {
+      setIsTourOpen(false)
+      setIsModalTourOpen(true)
+    }
+  })
+  const onCloseWithTour = () => {
+    if (isModalTourOpen) {
+      setIsModalTourOpen(false)
+      setIsTourOpen(true)
+    }
+    onClose()
+  }
+  return (
+    <>
+      <Overlay color={overlay} onClick={onCloseWithTour} />
+      <StyledModal height={height} width={width} border={border}>
+        {children}
+      </StyledModal>
+    </>
+  )
+}
 Modal.defaultProps = {
   height: 700,
   width: 700,
@@ -47,8 +64,18 @@ const StyledClose = styled(X)`
   right: 1rem;
   top: 1rem;
 `
-export const Close = ({ ...props }) => (
-  <Tabbable component={StyledClose} {...props} />
-)
+export const Close = ({ onClick, ...props }) => {
+  const { tour: [isTourOpen, setIsTourOpen], modalTour: [isModalTourOpen, setIsModalTourOpen] } = useContext(TourContext)
+  const onCloseWithTour = () => {
+    if (isModalTourOpen) {
+      setIsModalTourOpen(false)
+      setIsTourOpen(true)
+    }
+    onClick()
+  }
+  return (
+    <Tabbable component={StyledClose} onClick={onCloseWithTour} {...props} />
+  )
+}
 
 export default Modal

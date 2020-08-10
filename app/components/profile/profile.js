@@ -173,6 +173,7 @@ const Profile = ({ p2p }) => {
     setIsEditing(false)
     setIsSaved(true)
     setTimeout(() => setIsSaved(false), 2000)
+    setTourStep(3)
     await fetchContents(profile)
   }
 
@@ -275,7 +276,11 @@ const Profile = ({ p2p }) => {
           </Button>
           {isEditing ? (
             <>
-              <Button color={green} disabled={isTitleInvalid}>
+              <Button
+                color={green}
+                disabled={isTitleInvalid}
+                id='profile-save'
+              >
                 Save
               </Button>
               <Button
@@ -293,13 +298,14 @@ const Profile = ({ p2p }) => {
               type='button'
               color={green}
               onClick={() => setIsEditing(true)}
+              id='profile-edit'
             >
               Edit profile
             </Button>
           ) : null}
         </Form>
       </TopRow>
-      <Header>
+      <Header id='profile-header'>
         <StyledAvatar name={nameForAvatar} />
         <Description
           isEditing={isEditing}
@@ -316,7 +322,6 @@ const Profile = ({ p2p }) => {
               setIsPopulatingDescription(true)
             }
           }}
-          id='profile-description'
         >
           {isEditing ? (
             <StyledTextarea
@@ -372,7 +377,7 @@ const Profile = ({ p2p }) => {
             The change will even be synchronized across their existing work!`
           },
           {
-            selector: '#profile-description',
+            selector: '#profile-header',
             content: `Here's a space for a little bio...`
           },
           {
@@ -392,6 +397,37 @@ const Profile = ({ p2p }) => {
           {
             selector: '#menu-feed',
             content: `... and then open the feed again.`
+          }
+        ]}
+        isOpen={isTourOpen}
+        onRequestClose={() => setIsTourOpen(false)}
+        goToStep={tourStep}
+      />}
+      {isOwnProfile && (!contents || !contents.length) && <Tour
+        steps={[
+          {
+            content: `This is you! To make sure you always retain access to this profile,
+            we advise backing up your Hypergraph database somewhere safe through Database → Back up database
+            in the menu bar. Hypergraph will close and reopen. You can re-open this tour via the Help menu.`
+          },
+          {
+            selector: '#profile-header',
+            content: `Let's add a little bio. Click Add a description to get writing.
+            Perhaps you can add something about your background, interests, affiliations
+            and link to some of your other profiles online.`
+          },
+          {
+            selector: '#profile-save',
+            content: `Now let's save your bio!`
+          },
+          {
+            selector: '#profile-share',
+            content: `Use the Share button to share your profile with others...
+            Or maybe we should add some content first?`
+          },
+          {
+            selector: '#menu-create',
+            content: `Click here to get started on your first Hypergraph content!`
           }
         ]}
         isOpen={isTourOpen}
