@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react'
 import styled from 'styled-components'
 import { TopRow, Row, Title, Button } from '../layout/grid'
-import { ProfileContext } from '../../lib/context'
+import { ProfileContext, TourContext } from '../../lib/context'
+import Tour from '../tour/tour'
 import { Heading3 } from '../typography'
 import Avatar from '../avatar/avatar'
 import { useHistory } from 'react-router-dom'
@@ -33,6 +34,7 @@ const Following = ({ p2p }) => {
   const [following, setFollowing] = useState()
   const [unfollowed, setUnfollowed] = useState({})
   const { url: profileUrl } = useContext(ProfileContext)
+  const { tour: [isTourOpen, setIsTourOpen] } = useContext(TourContext)
   const history = useHistory()
 
   useEffect(() => {
@@ -54,10 +56,10 @@ const Following = ({ p2p }) => {
       </TopRow>
       {following && (
         <>
-          {following.map(profile => {
+          {following.map((profile, i) => {
             const url = `/profiles/${encode(profile.rawJSON.url)}`
             return (
-              <Row noBorderTop key={profile.rawJSON.url}>
+              <Row noBorderTop key={profile.rawJSON.url} id={`profilerow-${i}`}>
                 <Tabbable component={Profile} onClick={() => history.push(url)}>
                   <StyledAvatar name={profile.rawJSON.title} size='40px' />
                   <Heading3>{profile.rawJSON.title}</Heading3>
@@ -89,6 +91,7 @@ const Following = ({ p2p }) => {
                         encode(profile.rawJSON.url)
                       )
                     }}
+                    id={`profilerow-${i}-unfollow`}
                   >
                     Unfollow
                   </StyledButton>
@@ -105,6 +108,32 @@ const Following = ({ p2p }) => {
           />
         </>
       )}
+      <Tour
+        steps={(() => {
+          const steps = [{
+            content: 'This displays all the profiles you follow.'
+          }]
+          if (!following || !following.length) {
+            steps.push({
+              selector: '#menu-find',
+              content: 'Click Find to look up a profile to follow.'
+            })
+          }
+          if (following && following.length) {
+            steps.push({
+              selector: '#profilerow-0',
+              content: 'Click to open a profile...'
+            })
+            steps.push({
+              selector: '#profilerow-0-unfollow',
+              content: '...or use the Unfollow buttons to quickly clean up your feed.'
+            })
+          }
+          return steps
+        })()}
+        isOpen={isTourOpen}
+        onRequestClose={() => setIsTourOpen(false)}
+      />
     </div>
   )
 }

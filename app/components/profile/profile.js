@@ -271,8 +271,9 @@ const Profile = ({ p2p }) => {
             content='icon'
             type='button'
             onClick={() => setIsSharing(true)}
+            id='profile-share'
           >
-            <Share id='profile-share' />
+            <Share />
           </Button>
           {isEditing ? (
             <>
@@ -366,74 +367,98 @@ const Profile = ({ p2p }) => {
           />
         </div>
       )}
-      {!isOwnProfile && <Tour
-        steps={[
-          {
-            content: `Great, you've found someone to follow! Let's take a little tour of their profile.`
-          },
-          {
-            selector: '#profile-title',
-            content: `Here is their name, which might change over time if they choose to alter it.
+      {!isOwnProfile &&
+        <Tour
+          steps={[
+            {
+              content: 'Great, you\'ve found someone to follow! Let\'s take a little tour of their profile.'
+            },
+            {
+              selector: '#profile-title',
+              content: `Here is their name, which might change over time if they choose to alter it.
             The change will even be synchronized across their existing work!`
-          },
-          {
-            selector: '#profile-header',
-            content: `Here's a space for a little bio...`
-          },
-          {
-            selector: '#profile-content',
-            content: `And here's their work, if they've added anything to their profile yet.`
-          },
-          {
-            selector: '#profile-share',
-            content: `You can also share their profile with others using this button.`
-          },
-          {
-            selector: '#profile-follow',
-            content: `Now this is what we're looking for.
+            },
+            {
+              selector: '#profile-header',
+              content: 'Here\'s a space for a little bio...'
+            },
+            {
+              selector: '#profile-content',
+              content: 'And here\'s their work, if they\'ve added anything to their profile yet.'
+            },
+            {
+              selector: '#profile-share',
+              content: 'You can also share their profile with others using this button.'
+            },
+            {
+              selector: '#profile-follow',
+              content: `Now this is what we're looking for.
             Clicking Follow means that you'll see this researcher's content appear in your feed.
             You can unfollow profiles at any time. Click Follow...`
-          },
-          {
-            selector: '#menu-feed',
-            content: `... and then open the feed again.`
-          }
-        ]}
-        isOpen={isTourOpen}
-        onRequestClose={() => setIsTourOpen(false)}
-        goToStep={tourStep}
-      />}
-      {isOwnProfile && (!contents || !contents.length) && <Tour
-        steps={[
-          {
-            content: `This is you! To make sure you always retain access to this profile,
+            },
+            {
+              selector: '#menu-feed',
+              content: '... and then open the feed again.'
+            }
+          ]}
+          isOpen={isTourOpen}
+          onRequestClose={() => setIsTourOpen(false)}
+          goToStep={tourStep}
+        />}
+      {isOwnProfile && (!contents || !contents.length) &&
+        <Tour
+          steps={[
+            {
+              content: `This is you! To make sure you always retain access to this profile,
             we advise backing up your Hypergraph database somewhere safe through Database → Back up database
             in the menu bar. Hypergraph will close and reopen. You can re-open this tour via the Help menu.`
-          },
-          {
-            selector: '#profile-header',
-            content: `Let's add a little bio. Click Add a description to get writing.
+            },
+            {
+              selector: '#profile-header',
+              content: `Let's add a little bio. Click Add a description to get writing.
             Perhaps you can add something about your background, interests, affiliations
             and link to some of your other profiles online.`
-          },
-          {
-            selector: '#profile-save',
-            content: `Now let's save your bio!`
-          },
-          {
-            selector: '#profile-share',
-            content: `Use the Share button to share your profile with others...
+            },
+            {
+              selector: '#profile-save',
+              content: 'Now let\'s save your bio!'
+            },
+            {
+              selector: '#profile-share',
+              content: `Use the Share button to share your profile with others...
             Or maybe we should add some content first?`
-          },
-          {
-            selector: '#menu-create',
-            content: `Click here to get started on your first Hypergraph content!`
-          }
-        ]}
-        isOpen={isTourOpen}
-        onRequestClose={() => setIsTourOpen(false)}
-        goToStep={tourStep}
-      />}
+            },
+            {
+              selector: '#menu-create',
+              content: 'Click here to get started on your first Hypergraph content!'
+            }
+          ]}
+          isOpen={isTourOpen}
+          onRequestClose={() => setIsTourOpen(false)}
+          goToStep={tourStep}
+        />}
+      {isOwnProfile && contents && contents.length > 0 &&
+        <Tour
+          steps={[
+            {
+              content: `Looking good! If you haven't made a backup already, now would be a great time to do so.
+            Otherwise, a computer crash could mean you'd lose access to your profile.
+            See Database → Back up database in the menu bar.
+            Hypergraph will close and reopen, but you can re-open this tour via the Help menu.`
+            },
+            {
+              selector: '#contentrow-addchild',
+              content: 'You can click this button to add new content that follows from this.'
+            },
+            {
+              content: `Great job! It seems like you've seen a lot of what Hypergraph has to offer.
+            If there are pages you haven't been to yet, click around. You can always re-open this tour later via the Help menu.
+            Thanks for following this tour, good luck with Hypergraph and much 💜 from the team at Liberate Science.`
+            }
+          ]}
+          isOpen={isTourOpen}
+          onRequestClose={() => setIsTourOpen(false)}
+        />}
     </>
   )
 }

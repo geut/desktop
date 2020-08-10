@@ -65,56 +65,58 @@ export default ({ p2p }) => {
           />
         </>
       )}
-      {!follows.length && <Tour
-        steps={[
-          {
-            content: `Here's a tour for you if you want each part of Hypergraph explained. 
+      {!follows.length &&
+        <Tour
+          steps={[
+            {
+              content: `Here's a tour for you if you want each part of Hypergraph explained. 
             You can re-open it later through the Help menu.`
-          },
-          {
-            selector: '#chatra',
-            content: `We are available in the chat for questions and feedback. Feel free to say hello! 🙋🏻‍♀️`
-          },
-          {
-            content: `Let's get started... The feed is where new content shows up once you follow people,
+            },
+            {
+              selector: '#chatra',
+              content: 'We are available in the chat for questions and feedback. Feel free to say hello! 🙋🏻‍♀️'
+            },
+            {
+              content: `Let's get started... The feed is where new content shows up once you follow people,
             so you can stay up-to-date on their work.`
-          },
-          {
-            selector: '#menu-find',
-            content: `Here you can look up Hypergraph profiles and content via hyper:// URLs.
+            },
+            {
+              selector: '#menu-find',
+              content: `Here you can look up Hypergraph profiles and content via hyper:// URLs.
             You can also search for things you've created or viewed previously.
             Click Find if you'd like to follow someone or continue to start adding content.`
-          },
-          {
-            selector: `#menu-create`,
-            content: `Click the + icon to add your work to Hypergraph.`
-          }
-        ]}
-        isOpen={isTourOpen}
-        onRequestClose={() => setIsTourOpen(false)}
-      />}
-      {follows.length > 0 && <Tour
-        steps={(() => {
-          let steps = [{
-            content: `If you've followed someone with content on their profile, you'll see their work here now.
+            },
+            {
+              selector: '#menu-create',
+              content: 'Click the + icon to add your work to Hypergraph.'
+            }
+          ]}
+          isOpen={isTourOpen}
+          onRequestClose={() => setIsTourOpen(false)}
+        />}
+      {follows.length > 0 &&
+        <Tour
+          steps={(() => {
+            const steps = [{
+              content: `If you've followed someone with content on their profile, you'll see their work here now.
             When new content arrives, your feed gets updated!.`
-          }]
-          if (contents.length) {
-            steps.push({
-              selector: '#contentrow-addcontentwithparent',
-              content: `You can click this button to add new content that follows from this.
+            }]
+            if (contents.length) {
+              steps.push({
+                selector: '#contentrow-addcontentwithparent',
+                content: `You can click this button to add new content that follows from this.
               Build on top of work of others or simply add the next step in your research project.`
+              })
+            }
+            steps.push({
+              selector: '#menu-profile',
+              content: 'Now, let\'s take a look at your own profile!'
             })
-          }
-          steps.push({
-            selector: '#menu-profile',
-            content: `Now, let's take a look at your own profile!`
-          })
-          return steps
-        })()}
-        isOpen={isTourOpen}
-        onRequestClose={() => setIsTourOpen(false)}
-      />}
+            return steps
+          })()}
+          isOpen={isTourOpen}
+          onRequestClose={() => setIsTourOpen(false)}
+        />}
     </>
   )
 }

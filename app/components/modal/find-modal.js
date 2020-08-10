@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext, useEffect } from 'react'
+import React, { useState, useRef, useContext } from 'react'
 import styled, { css } from 'styled-components'
 import Modal, { Close } from './modal'
 import { Heading2, Paragraph } from '../typography'
@@ -59,8 +59,6 @@ const FindModal = ({ onClose, prefilledUrl, p2p }) => {
     encode(url)
     isValid = true
   } catch (_) {}
-
-
 
   const onCloseWithCleanup = () => {
     if (clonePromise.current) {

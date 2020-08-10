@@ -13,6 +13,7 @@ import { Label } from '../forms/forms'
 import subtypes from '@hypergraph-xyz/wikidata-identifiers'
 import newlinesToBr from '../../lib/newlines-to-br'
 import { ProfileContext, TourContext } from '../../lib/context'
+import Tour from '../tour/tour'
 import isContentRegistered from '../../lib/is-content-registered'
 import Share from '../icons/share.svg'
 import ShareModal from './share-modal'
@@ -88,6 +89,7 @@ const ExportZip = ({ directory }) => (
       )
       if (filePath) zip.writeZip(filePath)
     }}
+    id='content-export'
   >
     Export .zip
   </Button>
@@ -191,17 +193,18 @@ const Content = ({ p2p, content, renderRow }) => {
       )}
       {renderRow(
         <>
-          <Title>{subtypes[content.rawJSON.subtype] || 'Content'}</Title>
+          <Title id='content-subtype'>{subtypes[content.rawJSON.subtype] || 'Content'}</Title>
           {content.rawJSON.main && (
             <Button
               content='icon'
               type='button'
               onClick={() => setIsSharing(true)}
+              id='content-share'
             >
               <Share />
             </Button>
           )}
-          <Button onClick={() => remote.shell.openPath(directory)}>
+          <Button onClick={() => remote.shell.openPath(directory)} id='content-openfolder'>
             Open folder
           </Button>
           <ExportZip directory={directory} />
@@ -209,17 +212,19 @@ const Content = ({ p2p, content, renderRow }) => {
       )}
       <Container>
         <Tabbable component={BackArrow} onClick={() => history.go(-1)} />
-        {parents.map(parent => (
-          <Link
-            component={Parent}
-            key={`${parent.rawJSON.url}+${parent.rawJSON.version}`}
-            to={`/profiles/${encode(parent.rawJSON.authors[0])}/${encode(
-              parent.rawJSON.url
-            )}`}
-          >
-            {parent.rawJSON.title}
-          </Link>
-        ))}
+        <div id='#content-parents'>
+          {parents.map(parent => (
+            <Link
+              component={Parent}
+              key={`${parent.rawJSON.url}+${parent.rawJSON.version}`}
+              to={`/profiles/${encode(parent.rawJSON.authors[0])}/${encode(
+                parent.rawJSON.url
+              )}`}
+            >
+              {parent.rawJSON.title}
+            </Link>
+          ))}
+        </div>
         <Heading1>{content.rawJSON.title}</Heading1>
         {authors.map(author => {
           return isContentRegistered(content, author) ? (
@@ -237,37 +242,39 @@ const Content = ({ p2p, content, renderRow }) => {
           )
         })}
         <Description>{newlinesToBr(content.rawJSON.description)}</Description>
-        <Label>Main file</Label>
-        {content.rawJSON.main ? (
-          <Tabbable
-            component={File}
-            onClick={() => {
-              remote.shell.openPath(`${directory}/${content.rawJSON.main}`)
-            }}
-          >
-            {content.rawJSON.main}
-          </Tabbable>
-        ) : (
-          <NoMain>Required for adding to profile and sharing</NoMain>
-        )}
-        {supportingFiles.length > 0 && (
-          <>
-            <Label>Supporting Files</Label>
-            <div>
-              {supportingFiles.map(path => (
-                <Tabbable
-                  component={File}
-                  key={path}
-                  onClick={() => {
-                    remote.shell.openPath(`${directory}/${path}`)
-                  }}
-                >
-                  {path}
-                </Tabbable>
-              ))}
-            </div>
-          </>
-        )}
+        <div id='content-files'>
+          <Label>Main file</Label>
+          {content.rawJSON.main ? (
+            <Tabbable
+              component={File}
+              onClick={() => {
+                remote.shell.openPath(`${directory}/${content.rawJSON.main}`)
+              }}
+            >
+              {content.rawJSON.main}
+            </Tabbable>
+          ) : (
+            <NoMain>Required for adding to profile and sharing</NoMain>
+          )}
+          {supportingFiles.length > 0 && (
+            <>
+              <Label>Supporting Files</Label>
+              <div>
+                {supportingFiles.map(path => (
+                  <Tabbable
+                    component={File}
+                    key={path}
+                    onClick={() => {
+                      remote.shell.openPath(`${directory}/${path}`)
+                    }}
+                  >
+                    {path}
+                  </Tabbable>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
         <Actions>
           {canRegisterContent ? (
             <Button
@@ -289,6 +296,7 @@ const Content = ({ p2p, content, renderRow }) => {
                 }
                 await fetchAuthors()
               }}
+              id='content-register'
             >
               Add to profile
             </Button>
@@ -311,6 +319,7 @@ const Content = ({ p2p, content, renderRow }) => {
                 }
                 await fetchAuthors()
               }}
+              id='content-deregister'
             >
               Remove from profile
             </Button>
@@ -336,12 +345,108 @@ const Content = ({ p2p, content, renderRow }) => {
                 await p2p.delete(content.rawJSON.url, deleteFiles)
                 history.push('/')
               }}
+              id='content-delete'
             >
               Delete content
             </Button>
           )}
         </Actions>
       </Container>
+      <Tour
+        steps={(() => {
+          const steps = []
+          if (content.metadata.isWritable) {
+            steps.push({
+              content: `Congratulations, you're now looking at your own work in Hypergraph!
+              Let's click through all the different features on this page.`
+            })
+          } else {
+            steps.push({
+              content: `You're now reading someone else's work on Hypergraph!
+              Let's click through all the different features on this page.`
+            })
+            steps.push({
+              selector: '#content-subtype',
+              content: 'The type of information contained.'
+            })
+          }
+          if (parents.length > 0) {
+            steps.push({
+              selector: '#content-parents',
+              content: `This shows which research steps directly preceded this one.
+              Hover to see what content this follows from and click to go to that content.
+
+              We're working on expanding this so you can navigate back and forth
+              and view a larger map displaying multiple levels of connections.`
+            })
+          }
+          if (!content.metadata.isWritable) {
+            steps.push({
+              selector: '#content-files',
+              content: `You can click on the files to directly open them.
+              The Main file is the most important one and generally where you should start.`
+            })
+          }
+          steps.push({
+            selector: '#content-share',
+            content: 'Like with profiles, you can share links directly to content.'
+          })
+          if (content.metadata.isWritable) {
+            steps.push({
+              selector: '#content-openfolder',
+              content: `This opens the folder on your computer, so you can easily make updates to your work.
+              Please note that the files are read-only if you're looking at an older version.`
+            })
+          } else {
+            steps.push({
+              selector: '#content-openfolder',
+              content: `This opens the folder on your computer.
+              Please note that the files are read-only by default for other people's content.
+              If you want to make changes, you should copy the files elsewhere.`
+            })
+          }
+          steps.push({
+            selector: '#content-export',
+            content: 'This exports the content as a ZIP archive.'
+          })
+          if (content.metadata.isWritable) {
+            if (canRegisterContent) {
+              steps.push({
+                selector: '#content-register',
+                content: `The Add to profile button makes the content available to everyone who has your profile link.
+                You can always choose to update it later or remove it from your profile.`
+              })
+            }
+            if (canDeregisterContent) {
+              steps.push({
+                selector: '#content-deregister',
+                content: `The Remove from profile button updates your profile to remove this piece of content.
+                This doesn't make it inaccessible to others, but does make it harder for others to find.`
+              })
+            }
+            steps.push({
+              selector: '#content-delete',
+              content: `This deletes this content from your profile and your computer.
+              It has no effect on other people's computers, so it may remain accessible if others also have this content.`
+            })
+            if (canRegisterContent) {
+              steps.push({
+                selector: '#menu-drafts',
+                content: 'Now, shall we take a look at your drafts to see how this content looks there?'
+              })
+            }
+            if (canDeregisterContent) {
+              steps.push({
+                selector: '#menu-profile',
+                content: 'Now, shall we take a look at your profile to see how this content looks there?'
+              })
+            }
+          }
+          return steps
+        })()}
+        isOpen={isTourOpen}
+        onRequestClose={() => setIsTourOpen(false)}
+      />
     </>
   ) : null
 }

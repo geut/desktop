@@ -11,14 +11,14 @@ const StyledTour = styled(Reactour)`
 `
 
 const Tour = ({ ...props }) => {
-    return (
-        <StyledTour
-            {...props}
-            accentColor={purple}
-            closeWithMask={false}
-            maskSpace={2}
-        />
-    )
+  return (
+    <StyledTour
+      {...props}
+      accentColor={purple}
+      closeWithMask={false}
+      maskSpace={2}
+    />
+  )
 }
 
 export default Tour

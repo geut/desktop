@@ -5,7 +5,7 @@ const ReopenTour = () => {
   const { tour: [isTourOpen, setIsTourOpen] } = useContext(TourContext)
   useEffect(() => {
     setIsTourOpen(true)
-    //history.go(-1)
+    // history.go(-1)
   })
   return (
     <></>
