@@ -385,10 +385,12 @@ const Profile = ({ p2p }) => {
               },
               {
                 selector: '#profile-title',
-                content: <div>
-                  Here is their name, which might change over time if they choose to alter it.
-                  The change will even be synchronized across their existing work!
-                </div>
+                content: (
+                  <div>
+                    Here is their name, which might change over time if they choose to alter it.
+                    The change will even be synchronized across their existing work!
+                  </div>
+                )
               },
               {
                 selector: '#profile-header',
@@ -405,11 +407,13 @@ const Profile = ({ p2p }) => {
             if (!isFollowed) {
               steps.push({
                 selector: '#profile-follow',
-                content: <div>
-                  Now this is what we're looking for.
-                  Clicking <i>Follow</i> means that you'll see this researcher's content appear in your feed.
-                  You can unfollow profiles at any time. Click <i>Follow</i>...
-                         </div>
+                content: (
+                  <div>
+                    Now this is what we're looking for.
+                    Clicking <i>Follow</i> means that you'll see this researcher's content appear in your feed.
+                    You can unfollow profiles at any time. Click <i>Follow</i>...
+                  </div>
+                )
               })
             }
             steps.push({
@@ -426,19 +430,23 @@ const Profile = ({ p2p }) => {
         <Tour
           steps={[
             {
-              content: <div>
-                This is you! To make sure you always retain access to this profile,
-                we advise backing up your Hypergraph database somewhere safe through <i>Database → Back up database</i>
-                in the menu bar. Hypergraph will close and reopen. You can re-open this tour via the Help menu.
-                       </div>
+              content: (
+                <div>
+                  This is you! To make sure you always retain access to this profile,
+                  we advise backing up your Hypergraph database somewhere safe through <i>Database → Back up database</i>
+                  in the menu bar. Hypergraph will close and reopen. You can re-open this tour via the Help menu.
+                </div>
+              )
             },
             {
               selector: '#profile-header',
-              content: <div>
-                Let's add a little bio. Click <i>Add a description</i> to get writing.
-                Perhaps you can add something about your background, interests, affiliations
-                and link to some of your other profiles online.
-                       </div>
+              content: (
+                <div>
+                  Let's add a little bio. Click <i>Add a description</i> to get writing.
+                  Perhaps you can add something about your background, interests, affiliations
+                  and link to some of your other profiles online.
+                </div>
+              )
             },
             {
               selector: '#profile-save',
@@ -446,10 +454,12 @@ const Profile = ({ p2p }) => {
             },
             {
               selector: '#profile-share',
-              content: <div>
-                Use the <i>Share</i> button to share your profile with others...
-                Or maybe we should add some content first?
-                       </div>
+              content: (
+                <div>
+                  Use the <i>Share</i> button to share your profile with others...
+                  Or maybe we should add some content first?
+                </div>
+              )
             },
             {
               selector: '#menu-create',
@@ -465,12 +475,14 @@ const Profile = ({ p2p }) => {
         <Tour
           steps={[
             {
-              content: <div>
-                Looking good! If you haven't made a backup already, now would be a great time to do so.
-                Otherwise, a computer crash could mean you'd lose access to your profile.
-                See <i>Database → Back up database</i> in the menu bar.
-                Hypergraph will close and reopen, but you can re-open this tour via the Help menu.
-                       </div>,
+              content: (
+                <div>
+                  Looking good! If you haven't made a backup already, now would be a great time to do so.
+                  Otherwise, a computer crash could mean you'd lose access to your profile.
+                  See <i>Database → Back up database</i> in the menu bar.
+                  Hypergraph will close and reopen, but you can re-open this tour via the Help menu.
+                </div>
+              ),
               action: () => {
                 document.getElementById('contentrow-0-addcontentwithparent').style.display = 'block'
               }
@@ -480,11 +492,13 @@ const Profile = ({ p2p }) => {
               content: <div>You can click this button to add new content that follows from this.</div>
             },
             {
-              content: <div>
-                Great job! It seems like you've seen a lot of what Hypergraph has to offer.
-                If there are pages you haven't been to yet, click around. You can always re-open this tour later via the Help menu.
-                Thanks for following this tour, good luck with Hypergraph and much 💜 from the team at Liberate Science.
-                       </div>
+              content: (
+                <div>
+                  Great job! It seems like you've seen a lot of what Hypergraph has to offer.
+                  If there are pages you haven't been to yet, click around. You can always re-open this tour later via the Help menu.
+                  Thanks for following this tour, good luck with Hypergraph and much 💜 from the team at Liberate Science.
+                </div>
+              )
             }
           ]}
           isOpen={isTourOpen}

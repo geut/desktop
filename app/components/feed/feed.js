@@ -70,28 +70,34 @@ export default ({ p2p }) => {
         <Tour
           steps={[
             {
-              content: <div>
-                Want each part of Hypergraph explained? Then this tour is for you!
-                Otherwise, you can always re-open it later through the <i>Help</i> menu.
-              </div>
+              content: (
+                <div>
+                  Want each part of Hypergraph explained? Then this tour is for you!
+                  Otherwise, you can always re-open it later through the <i>Help</i> menu.
+                </div>
+              )
             },
             {
               selector: '#chatra',
               content: <div>We are available in the chat for questions and feedback. Feel free to say hello! 🙋🏻‍♀️🙋🏽‍♂️🙋🏿‍♀️</div>
             },
             {
-              content: <div>
-                The feed is where new content shows up once you follow people,
-                so you can stay up-to-date on their work.
-                       </div>
+              content: (
+                <div>
+                  The feed is where new content shows up once you follow people,
+                  so you can stay up-to-date on their work.
+                </div>
+              )
             },
             {
               selector: '#menu-find',
-              content: <div>
-                Here you can look up Hypergraph profiles and content.
-                You can also search for things you've created or viewed previously.
-                Click <i>Find</i> if you'd like to follow someone or continue to start adding content.
-                       </div>
+              content: (
+                <div>
+                  Here you can look up Hypergraph profiles and content.
+                  You can also search for things you've created or viewed previously.
+                  Click <i>Find</i> if you'd like to follow someone or continue to start adding content.
+                </div>
+              )
             },
             {
               selector: '#menu-create',
@@ -105,10 +111,12 @@ export default ({ p2p }) => {
         <Tour
           steps={(() => {
             const steps = [{
-              content: <div>
-                If you've followed someone with content on their profile, you'll see their work here now.
-                When new content arrives, your feed gets updated!.
-              </div>
+              content: (
+                <div>
+                  If you've followed someone with content on their profile, you'll see their work here now.
+                  When new content arrives, your feed gets updated!.
+                </div>
+              )
             }]
             if (contents.length) {
               steps[0].action = () => {
@@ -116,10 +124,12 @@ export default ({ p2p }) => {
               }
               steps.push({
                 selector: '#contentrow-0-addcontentwithparent',
-                content: <div>
-                  You can click this button to add new content that follows from this.
-                  Build on top of work of others or simply add the next step in your research project.
-                </div>
+                content: (
+                  <div>
+                    You can click this button to add new content that follows from this.
+                    Build on top of work of others or simply add the next step in your research project.
+                  </div>
+                )
               })
             }
             steps.push({

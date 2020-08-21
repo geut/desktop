@@ -75,10 +75,12 @@ export default ({ p2p }) => {
       <Tour
         steps={(() => {
           const steps = [{
-            content: <div>
-              This is where all your in-progress work lives,
-              whether it's completely new or simply a newer version of content that's on your profile.
-            </div>
+            content: (
+              <div>
+                This is where all your in-progress work lives,
+                whether it's completely new or simply a newer version of content that's on your profile.
+              </div>
+            )
           }]
           if (drafts && drafts.length) {
             steps.push({
