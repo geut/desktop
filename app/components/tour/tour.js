@@ -5,6 +5,9 @@ import { purple } from '../../lib/colors'
 
 const StyledTour = styled(Reactour)`
   color: black;
+  font-size: 0.9em;
+  transition: none;
+  -webkit-transition: none;
   button:focus {
     outline: 0;
   }

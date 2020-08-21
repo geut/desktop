@@ -111,22 +111,25 @@ const Following = ({ p2p }) => {
       <Tour
         steps={(() => {
           const steps = [{
-            content: 'This displays all the profiles you follow.'
+            content: <div>This displays all the profiles you follow.</div>
           }]
           if (!following || !following.length) {
             steps.push({
               selector: '#menu-find',
-              content: 'Click Find to look up a profile to follow.'
+              content: <div>Click <i>Find</i> to look up a profile to follow.</div>
             })
           }
           if (following && following.length) {
             steps.push({
               selector: '#profilerow-0',
-              content: 'Click to open a profile...'
+              content: <div>Click to open a profile...</div>,
+              action: () => {
+                document.getElementById('profilerow-0-unfollow').style.display = 'block'
+              }
             })
             steps.push({
               selector: '#profilerow-0-unfollow',
-              content: '...or use the Unfollow buttons to quickly clean up your feed.'
+              content: <div>...or use the <i>Unfollow</i> buttons to quickly clean up your feed.</div>
             })
           }
           return steps

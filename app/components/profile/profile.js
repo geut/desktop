@@ -131,6 +131,7 @@ const Profile = ({ p2p }) => {
   const [nameForAvatar, setNameForAvatar] = useState()
   const [ownProfile, setOwnProfile] = useState()
   const [isOwnProfile, setIsOwnProfile] = useState()
+  const [isFollowed, setIsFollowed] = useState()
   const { url: ownProfileUrl } = useContext(ProfileContext)
   const { tour: [isTourOpen, setIsTourOpen] } = useContext(TourContext)
   const [tourStep, setTourStep] = useState(0)
@@ -154,6 +155,8 @@ const Profile = ({ p2p }) => {
 
   const onSubmit = async e => {
     e.preventDefault()
+    const tourWasOpen = isTourOpen
+    setIsTourOpen(false)
     setIsSaving(true)
     try {
       await p2p.set({
@@ -174,6 +177,7 @@ const Profile = ({ p2p }) => {
     setIsSaved(true)
     setTimeout(() => setIsSaved(false), 2000)
     setTourStep(3)
+    setIsTourOpen(tourWasOpen)
     await fetchContents(profile)
   }
 
@@ -197,6 +201,15 @@ const Profile = ({ p2p }) => {
   useEffect(() => {
     fetchOwnProfile()
   }, [])
+
+  useEffect(() => {
+    if (!profile) return
+    if (!profile.metadata.isWritable && ownProfile) {
+      setIsFollowed(ownProfile.rawJSON.follows.find(
+        url => encode(url) === encode(profile.rawJSON.url)
+      ))
+    }
+  }, [key, profile, ownProfile])
 
   if (!profile) return null
 
@@ -232,41 +245,35 @@ const Profile = ({ p2p }) => {
               profile.rawJSON.title
             )}
           </Title>
-          {(() => {
-            if (profile.metadata.isWritable || !ownProfile) return
-            const follows = ownProfile.rawJSON.follows.find(
-              url => encode(url) === encode(profile.rawJSON.url)
-            )
-            return follows ? (
-              <Button
-                type='button'
-                onClick={async () => {
-                  await p2p.unfollow(
-                    encode(ownProfile.rawJSON.url),
-                    encode(profile.rawJSON.url)
-                  )
-                  await fetchOwnProfile()
-                }}
-              >
+          {isFollowed ? (
+            <Button
+              type='button'
+              onClick={async () => {
+                await p2p.unfollow(
+                  encode(ownProfile.rawJSON.url),
+                  encode(profile.rawJSON.url)
+                )
+                await fetchOwnProfile()
+              }}
+            >
                 Unfollow
-              </Button>
-            ) : (
-              <Button
-                type='button'
-                onClick={async () => {
-                  await p2p.follow(
-                    encode(ownProfile.rawJSON.url),
-                    encode(profile.rawJSON.url)
-                  )
-                  await fetchOwnProfile()
-                  setTourStep(6)
-                }}
-                id='profile-follow'
-              >
+            </Button>
+          ) : (
+            <Button
+              type='button'
+              onClick={async () => {
+                await p2p.follow(
+                  encode(ownProfile.rawJSON.url),
+                  encode(profile.rawJSON.url)
+                )
+                setTourStep(5)
+                await fetchOwnProfile()
+              }}
+              id='profile-follow'
+            >
                 Follow
-              </Button>
-            )
-          })()}
+            </Button>
+          )}
           <Button
             content='icon'
             type='button'
@@ -321,6 +328,7 @@ const Profile = ({ p2p }) => {
             ) {
               setIsEditing(true)
               setIsPopulatingDescription(true)
+              setTourStep(1)
             }
           }}
         >
@@ -346,7 +354,7 @@ const Profile = ({ p2p }) => {
       </StickyRow>
       {contents && (
         <div id='profile-content'>
-          {contents.map(content => {
+          {contents.map((content, i) => {
             return (
               <ContentRow
                 key={content.rawJSON.url}
@@ -355,6 +363,7 @@ const Profile = ({ p2p }) => {
                 to={`/profiles/${encode(profile.rawJSON.url)}/${encode(
                   content.rawJSON.url
                 )}`}
+                id={`contentrow-${i}`}
               />
             )
           })}
@@ -369,38 +378,46 @@ const Profile = ({ p2p }) => {
       )}
       {!isOwnProfile &&
         <Tour
-          steps={[
-            {
-              content: 'Great, you\'ve found someone to follow! Let\'s take a little tour of their profile.'
-            },
-            {
-              selector: '#profile-title',
-              content: `Here is their name, which might change over time if they choose to alter it.
-            The change will even be synchronized across their existing work!`
-            },
-            {
-              selector: '#profile-header',
-              content: 'Here\'s a space for a little bio...'
-            },
-            {
-              selector: '#profile-content',
-              content: 'And here\'s their work, if they\'ve added anything to their profile yet.'
-            },
-            {
-              selector: '#profile-share',
-              content: 'You can also share their profile with others using this button.'
-            },
-            {
-              selector: '#profile-follow',
-              content: `Now this is what we're looking for.
-            Clicking Follow means that you'll see this researcher's content appear in your feed.
-            You can unfollow profiles at any time. Click Follow...`
-            },
-            {
-              selector: '#menu-feed',
-              content: '... and then open the feed again.'
+          steps={(() => {
+            const steps = [
+              {
+                content: <div>Great, you've found someone to follow! Let's take a little tour of their profile.</div>
+              },
+              {
+                selector: '#profile-title',
+                content: <div>
+                  Here is their name, which might change over time if they choose to alter it.
+                  The change will even be synchronized across their existing work!
+                </div>
+              },
+              {
+                selector: '#profile-header',
+                content: <div>Here's a space for a little bio...</div>
+              },
+              {
+                selector: '#profile-content',
+                content: <div>And here's their work, if they've added anything to their profile yet.</div>
+              },
+              {
+                selector: '#profile-share',
+                content: <div>You can also share their profile with others using this button.</div>
+              }]
+            if (!isFollowed) {
+              steps.push({
+                selector: '#profile-follow',
+                content: <div>
+                  Now this is what we're looking for.
+                  Clicking <i>Follow</i> means that you'll see this researcher's content appear in your feed.
+                  You can unfollow profiles at any time. Click <i>Follow</i>...
+                         </div>
+              })
             }
-          ]}
+            steps.push({
+              selector: '#menu-feed',
+              content: <div>... and then open the <i>Feed</i> again.</div>
+            })
+            return steps
+          })()}
           isOpen={isTourOpen}
           onRequestClose={() => setIsTourOpen(false)}
           goToStep={tourStep}
@@ -409,51 +426,65 @@ const Profile = ({ p2p }) => {
         <Tour
           steps={[
             {
-              content: `This is you! To make sure you always retain access to this profile,
-            we advise backing up your Hypergraph database somewhere safe through Database → Back up database
-            in the menu bar. Hypergraph will close and reopen. You can re-open this tour via the Help menu.`
+              content: <div>
+                This is you! To make sure you always retain access to this profile,
+                we advise backing up your Hypergraph database somewhere safe through <i>Database → Back up database</i>
+                in the menu bar. Hypergraph will close and reopen. You can re-open this tour via the Help menu.
+                       </div>
             },
             {
               selector: '#profile-header',
-              content: `Let's add a little bio. Click Add a description to get writing.
-            Perhaps you can add something about your background, interests, affiliations
-            and link to some of your other profiles online.`
+              content: <div>
+                Let's add a little bio. Click <i>Add a description</i> to get writing.
+                Perhaps you can add something about your background, interests, affiliations
+                and link to some of your other profiles online.
+                       </div>
             },
             {
               selector: '#profile-save',
-              content: 'Now let\'s save your bio!'
+              content: <div>Now let's save your bio!</div>
             },
             {
               selector: '#profile-share',
-              content: `Use the Share button to share your profile with others...
-            Or maybe we should add some content first?`
+              content: <div>
+                Use the <i>Share</i> button to share your profile with others...
+                Or maybe we should add some content first?
+                       </div>
             },
             {
               selector: '#menu-create',
-              content: 'Click here to get started on your first Hypergraph content!'
+              content: <div>Click here to get started on your first Hypergraph content!</div>
             }
           ]}
           isOpen={isTourOpen}
           onRequestClose={() => setIsTourOpen(false)}
           goToStep={tourStep}
+          disableFocusLock
         />}
       {isOwnProfile && contents && contents.length > 0 &&
         <Tour
           steps={[
             {
-              content: `Looking good! If you haven't made a backup already, now would be a great time to do so.
-            Otherwise, a computer crash could mean you'd lose access to your profile.
-            See Database → Back up database in the menu bar.
-            Hypergraph will close and reopen, but you can re-open this tour via the Help menu.`
+              content: <div>
+                Looking good! If you haven't made a backup already, now would be a great time to do so.
+                Otherwise, a computer crash could mean you'd lose access to your profile.
+                See <i>Database → Back up database</i> in the menu bar.
+                Hypergraph will close and reopen, but you can re-open this tour via the Help menu.
+                       </div>,
+              action: () => {
+                document.getElementById('contentrow-0-addcontentwithparent').style.display = 'block'
+              }
             },
             {
-              selector: '#contentrow-addchild',
-              content: 'You can click this button to add new content that follows from this.'
+              selector: '#contentrow-0-addcontentwithparent',
+              content: <div>You can click this button to add new content that follows from this.</div>
             },
             {
-              content: `Great job! It seems like you've seen a lot of what Hypergraph has to offer.
-            If there are pages you haven't been to yet, click around. You can always re-open this tour later via the Help menu.
-            Thanks for following this tour, good luck with Hypergraph and much 💜 from the team at Liberate Science.`
+              content: <div>
+                Great job! It seems like you've seen a lot of what Hypergraph has to offer.
+                If there are pages you haven't been to yet, click around. You can always re-open this tour later via the Help menu.
+                Thanks for following this tour, good luck with Hypergraph and much 💜 from the team at Liberate Science.
+                       </div>
             }
           ]}
           isOpen={isTourOpen}

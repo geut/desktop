@@ -49,7 +49,7 @@ const FindModal = ({ onClose, prefilledUrl, p2p }) => {
   const [isLoading, setIsLoading] = useState()
   const [url, setUrl] = useState(prefilledUrl)
   const [isUnavailable, setIsUnavailable] = useState()
-  const { modalTour: [isModalTourOpen, setIsModalTourOpen] } = useContext(TourContext)
+  const { tour: [, setIsTourOpen], modalTour: [isModalTourOpen, setIsModalTourOpen] } = useContext(TourContext)
   const inputEl = useRef()
   const clonePromise = useRef()
   const history = useHistory()
@@ -109,8 +109,13 @@ const FindModal = ({ onClose, prefilledUrl, p2p }) => {
                 const url = version ? `${encode(key)}/${version}` : encode(key)
                 history.push(`/contents/${url}`)
               }
+              if (isModalTourOpen) {
+                setIsModalTourOpen(false)
+                setIsTourOpen(true)
+              }
             }
           }}
+          id='find-form'
         >
           <Label>
             URL
@@ -134,7 +139,6 @@ const FindModal = ({ onClose, prefilledUrl, p2p }) => {
               onChange={ev => {
                 setUrl(ev.target.value)
               }}
-              id='find-input'
             />
           )}
           <StyledButton content='icon' disabled={!isValid}>
@@ -145,15 +149,22 @@ const FindModal = ({ onClose, prefilledUrl, p2p }) => {
       <Tour
         steps={[
           {
-            selector: '#find-input',
-            content: `Perhaps you already know someone using Hypergraph? Paste their profile URL here to view it. 
-            Otherwise, try this example content: hyper://d1c36fd97f224667bb6fdec0443988a03d090ed98253d13e5e851a9fcc996802.
-            ⚠ If you're getting an error message, please retry a couple of times.
-            If the profile you're looking for isn't hosted in the Vault, it could be that no one with the data is currently online.`
+            selector: '#find-form',
+            content: <div>
+              Perhaps you already know someone using Hypergraph? Paste their profile URL here to view it.
+              Otherwise, try this example content: hypergraph://d1c36fd97f224667bb6fdec0443988a03d090ed98253d13e5e851a9fcc996802.
+              ⚠ If you're getting an error message, please retry a couple of times.
+              If the profile you're looking for isn't hosted in the Vault, it could be that no one with the data is currently online.
+            </div>,
+            style: {
+              maxWidth: '44em',
+              WebkitUserSelect: 'text'
+            }
           }
         ]}
         isOpen={isModalTourOpen}
         onRequestClose={() => setIsModalTourOpen(false)}
+        disableFocusLock
       />
     </>
   )

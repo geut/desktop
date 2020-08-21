@@ -75,18 +75,20 @@ export default ({ p2p }) => {
       <Tour
         steps={(() => {
           const steps = [{
-            content: `This is where all your in-progress work lives,
-            whether it's completely new or simply a newer version of content that's on your profile.`
+            content: <div>
+              This is where all your in-progress work lives,
+              whether it's completely new or simply a newer version of content that's on your profile.
+            </div>
           }]
           if (drafts && drafts.length) {
             steps.push({
               selector: '#contentrow-0',
-              content: 'Click on a piece of content to open it, or...'
+              content: <div>Click on a piece of content to open it, or...</div>
             })
           }
           steps.push({
             selector: '#menu-create',
-            content: 'Click the + icon in the bottom-left to add something new.'
+            content: <div>Click the + icon in the bottom-left to add something new.</div>
           })
           return steps
         })()}

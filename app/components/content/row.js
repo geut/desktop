@@ -105,7 +105,7 @@ const ToggleParentArrow = styled.span`
   display: inline-block;
 `
 
-const Row = ({ p2p, content, pad, to, isParent }) => {
+const Row = ({ p2p, content, pad, to, isParent, id }) => {
   const history = useHistory()
   const location = useLocation()
   const [authors, setAuthors] = useState([])
@@ -140,6 +140,7 @@ const Row = ({ p2p, content, pad, to, isParent }) => {
           if (!e || e.target.tagName !== 'A') history.push(to)
         }}
         isParent={isParent}
+        id={id}
       >
         <Attributes>
           <Attribute>
@@ -193,7 +194,7 @@ const Row = ({ p2p, content, pad, to, isParent }) => {
                 }`
               )
             }}
-            id='contentrow-addcontentwithparent'
+            id={`${id}-addcontentwithparent`}
           />
         )}
       </Tabbable>

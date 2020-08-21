@@ -42,7 +42,7 @@ export default ({ p2p }) => {
       </TopRow>
       {contents && (
         <>
-          {contents.map(content => {
+          {contents.map((content, i) => {
             return (
               <ContentRow
                 key={content.rawJSON.url}
@@ -51,6 +51,7 @@ export default ({ p2p }) => {
                 to={`/contents/${encode(content.rawJSON.url)}/${
                   content.metadata.version
                 }`}
+                id={`contentrow-${i}`}
               />
             )
           })}
@@ -69,26 +70,32 @@ export default ({ p2p }) => {
         <Tour
           steps={[
             {
-              content: `Here's a tour for you if you want each part of Hypergraph explained. 
-            You can re-open it later through the Help menu.`
+              content: <div>
+                Want each part of Hypergraph explained? Then this tour is for you!
+                Otherwise, you can always re-open it later through the <i>Help</i> menu.
+              </div>
             },
             {
               selector: '#chatra',
-              content: 'We are available in the chat for questions and feedback. Feel free to say hello! 🙋🏻‍♀️'
+              content: <div>We are available in the chat for questions and feedback. Feel free to say hello! 🙋🏻‍♀️🙋🏽‍♂️🙋🏿‍♀️</div>
             },
             {
-              content: `Let's get started... The feed is where new content shows up once you follow people,
-            so you can stay up-to-date on their work.`
+              content: <div>
+                The feed is where new content shows up once you follow people,
+                so you can stay up-to-date on their work.
+                       </div>
             },
             {
               selector: '#menu-find',
-              content: `Here you can look up Hypergraph profiles and content via hyper:// URLs.
-            You can also search for things you've created or viewed previously.
-            Click Find if you'd like to follow someone or continue to start adding content.`
+              content: <div>
+                Here you can look up Hypergraph profiles and content.
+                You can also search for things you've created or viewed previously.
+                Click <i>Find</i> if you'd like to follow someone or continue to start adding content.
+                       </div>
             },
             {
               selector: '#menu-create',
-              content: 'Click the + icon to add your work to Hypergraph.'
+              content: <div>Click the + icon to add your work to Hypergraph.</div>
             }
           ]}
           isOpen={isTourOpen}
@@ -98,19 +105,26 @@ export default ({ p2p }) => {
         <Tour
           steps={(() => {
             const steps = [{
-              content: `If you've followed someone with content on their profile, you'll see their work here now.
-            When new content arrives, your feed gets updated!.`
+              content: <div>
+                If you've followed someone with content on their profile, you'll see their work here now.
+                When new content arrives, your feed gets updated!.
+              </div>
             }]
             if (contents.length) {
+              steps[0].action = () => {
+                document.getElementById('contentrow-0-addcontentwithparent').style.display = 'block'
+              }
               steps.push({
-                selector: '#contentrow-addcontentwithparent',
-                content: `You can click this button to add new content that follows from this.
-              Build on top of work of others or simply add the next step in your research project.`
+                selector: '#contentrow-0-addcontentwithparent',
+                content: <div>
+                  You can click this button to add new content that follows from this.
+                  Build on top of work of others or simply add the next step in your research project.
+                </div>
               })
             }
             steps.push({
               selector: '#menu-profile',
-              content: 'Now, let\'s take a look at your own profile!'
+              content: <div>Now, let's take a look at your own profile!'</div>
             })
             return steps
           })()}
