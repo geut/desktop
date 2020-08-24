@@ -434,7 +434,9 @@ const Profile = ({ p2p }) => {
                 <div>
                   This is you! To make sure you always retain access to this profile,
                   we advise backing up your Hypergraph database somewhere safe through <i>Database → Back up database</i>
-                  in the menu bar. Hypergraph will close and reopen. You can re-open this tour via the Help menu.
+                  in the menu bar. Please note that you currently can't run Hypergraph on multiple devices this way.<br />
+                  <br />
+                  Hypergraph will close and reopen. You can re-open this tour via the Help menu.
                 </div>
               )
             },
