@@ -156,31 +156,32 @@ const Menu = ({ p2p, onFind }) => {
         )}
       </NetworkStatusContainer>
       <StyledRow>
-        <ButtonNavLink to='/' exact history={history} id='menu-feed'>
+        <ButtonNavLink to='/' exact history={history} id='tour-menu-feed'>
           Feed
         </ButtonNavLink>
-        <ButtonNavLink to='/drafts' history={history} id='menu-drafts'>
+        <ButtonNavLink to='/drafts' history={history} id='tour-menu-drafts'>
           Drafts
         </ButtonNavLink>
         <ButtonNavLink
           to={`/profiles/${profileUrl ? encode(profileUrl) : ''}`}
           history={history}
-          id='menu-profile'
+          id='tour-menu-profile'
         >
           Profile
         </ButtonNavLink>
-        <ButtonNavLink to='/following' history={history} id='menu-following'>
+        <ButtonNavLink
+          to='/following'
+          history={history}
+          id='tour-menu-following'
+        >
           Following
         </ButtonNavLink>
-        <ButtonNavLink to='/tour/reopen' history={history} id='menu-reopen'>
-          Reopen Tour
-        </ButtonNavLink>
       </StyledRow>
-      <FindButton onClick={onFind} id='menu-find'>
+      <FindButton onClick={onFind} id='tour-menu-find'>
         <StyledSearch />
         Find
       </FindButton>
-      <AddContentLink to='/create' id='menu-create'>
+      <AddContentLink to='/create' id='tour-menu-create'>
         <AddContent />
       </AddContentLink>
     </Container>

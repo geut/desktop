@@ -10,7 +10,9 @@ import Tour from '../tour/tour'
 export default ({ p2p }) => {
   const [contents, setContents] = useState()
   const [follows, setFollows] = useState([])
-  const { tour: [isTourOpen, setIsTourOpen] } = useContext(TourContext)
+  const {
+    tour: [isTourOpen, setIsTourOpen]
+  } = useContext(TourContext)
   const { url: profileUrl } = useContext(ProfileContext)
 
   useEffect(() => {
@@ -51,7 +53,7 @@ export default ({ p2p }) => {
                 to={`/contents/${encode(content.rawJSON.url)}/${
                   content.metadata.version
                 }`}
-                id={`contentrow-${i}`}
+                id={`tour-contentrow-${i}`}
               />
             )
           })}
@@ -66,20 +68,26 @@ export default ({ p2p }) => {
           />
         </>
       )}
-      {!follows.length &&
+      {!follows.length && (
         <Tour
           steps={[
             {
               content: (
                 <div>
-                  Want each part of Hypergraph explained? Then this tour is for you!
-                  Otherwise, you can always re-open it later through the <i>Help</i> menu.
+                  Want each part of Hypergraph explained? Then this tour is for
+                  you! Otherwise, you can always re-open it later through the{' '}
+                  <i>Help</i> menu.
                 </div>
               )
             },
             {
-              selector: '#chatra',
-              content: <div>We are available in the chat for questions and feedback. Feel free to say hello! 🙋🏻‍♀️🙋🏽‍♂️🙋🏿‍♀️</div>
+              selector: '#tour-chatra',
+              content: (
+                <div>
+                  We are available in the chat for questions and feedback. Feel
+                  free to say hello! 🙋🏻‍♀️🙋🏽‍♂️🙋🏿‍♀️
+                </div>
+              )
             },
             {
               content: (
@@ -90,57 +98,63 @@ export default ({ p2p }) => {
               )
             },
             {
-              selector: '#menu-find',
+              selector: '#tour-menu-find',
               content: (
                 <div>
-                  Here you can look up Hypergraph profiles and content.
-                  You can also search for things you've created or viewed previously.
-                  Click <i>Find</i> if you'd like to follow someone or continue to start adding content.
+                  Here you can look up Hypergraph profiles and content. You can
+                  also search for things you've created or viewed previously.
+                  Click <i>Find</i> if you'd like to follow someone or continue
+                  to start adding content.
                 </div>
               )
             },
             {
-              selector: '#menu-create',
-              content: <div>Click the + icon to add your work to Hypergraph.</div>
+              selector: '#tour-menu-create',
+              content: (
+                <div>Click the + icon to add your work to Hypergraph.</div>
+              )
             }
           ]}
           isOpen={isTourOpen}
           onRequestClose={() => setIsTourOpen(false)}
-        />}
-      {follows.length > 0 &&
+        />
+      )}
+      {follows.length > 0 && (
         <Tour
           steps={(() => {
-            const steps = [{
-              content: (
-                <div>
-                  If you've followed someone with content on their profile, you'll see their work here now.
-                  When new content arrives, your feed gets updated!.
-                </div>
-              )
-            }]
-            if (contents.length) {
-              steps[0].action = () => {
-                document.getElementById('contentrow-0-addcontentwithparent').style.display = 'block'
-              }
-              steps.push({
-                selector: '#contentrow-0-addcontentwithparent',
+            const steps = [
+              {
                 content: (
                   <div>
-                    You can click this button to add new content that follows from this.
-                    Build on top of work of others or simply add the next step in your research project.
+                    If you've followed someone with content on their profile,
+                    you'll see their work here now. When new content arrives,
+                    your feed gets updated!.
+                  </div>
+                )
+              }
+            ]
+            if (contents.length) {
+              steps.push({
+                selector: '#tour-contentrow-0',
+                content: (
+                  <div>
+                    Move the mouse over to the right to add new content that
+                    follows from this. Build on top of work of others or simply
+                    add the next step in your research project.
                   </div>
                 )
               })
             }
             steps.push({
-              selector: '#menu-profile',
+              selector: '#tour-menu-profile',
               content: <div>Now, let's take a look at your own profile!'</div>
             })
             return steps
           })()}
           isOpen={isTourOpen}
           onRequestClose={() => setIsTourOpen(false)}
-        />}
+        />
+      )}
     </>
   )
 }

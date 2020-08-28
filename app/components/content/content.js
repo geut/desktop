@@ -89,7 +89,7 @@ const ExportZip = ({ directory }) => (
       )
       if (filePath) zip.writeZip(filePath)
     }}
-    id='content-export'
+    id='tour-content-export'
   >
     Export .zip
   </Button>
@@ -118,7 +118,9 @@ const Content = ({ p2p, content, renderRow }) => {
   const [canRegisterContent, setCanRegisterContent] = useState()
   const [canDeregisterContent, setCanDeregisterContent] = useState()
   const [isSharing, setIsSharing] = useState()
-  const { tour: [isTourOpen, setIsTourOpen] } = useContext(TourContext)
+  const {
+    tour: [isTourOpen, setIsTourOpen]
+  } = useContext(TourContext)
   const history = useHistory()
   const { url: profileUrl } = useContext(ProfileContext)
 
@@ -193,18 +195,23 @@ const Content = ({ p2p, content, renderRow }) => {
       )}
       {renderRow(
         <>
-          <Title id='content-subtype'>{subtypes[content.rawJSON.subtype] || 'Content'}</Title>
+          <Title id='tour-content-subtype'>
+            {subtypes[content.rawJSON.subtype] || 'Content'}
+          </Title>
           {content.rawJSON.main && (
             <Button
               content='icon'
               type='button'
               onClick={() => setIsSharing(true)}
-              id='content-share'
+              id='tour-content-share'
             >
               <Share />
             </Button>
           )}
-          <Button onClick={() => remote.shell.openPath(directory)} id='content-openfolder'>
+          <Button
+            onClick={() => remote.shell.openPath(directory)}
+            id='tour-content-openfolder'
+          >
             Open folder
           </Button>
           <ExportZip directory={directory} />
@@ -212,7 +219,7 @@ const Content = ({ p2p, content, renderRow }) => {
       )}
       <Container>
         <Tabbable component={BackArrow} onClick={() => history.go(-1)} />
-        <div id='#content-parents'>
+        <div id='tour-#content-parents'>
           {parents.map(parent => (
             <Link
               component={Parent}
@@ -242,7 +249,7 @@ const Content = ({ p2p, content, renderRow }) => {
           )
         })}
         <Description>{newlinesToBr(content.rawJSON.description)}</Description>
-        <div id='content-files'>
+        <div id='tour-content-files'>
           <Label>Main file</Label>
           {content.rawJSON.main ? (
             <Tabbable
@@ -296,7 +303,7 @@ const Content = ({ p2p, content, renderRow }) => {
                 }
                 await fetchAuthors()
               }}
-              id='content-register'
+              id='tour-content-register'
             >
               Add to profile
             </Button>
@@ -319,7 +326,7 @@ const Content = ({ p2p, content, renderRow }) => {
                 }
                 await fetchAuthors()
               }}
-              id='content-deregister'
+              id='tour-content-deregister'
             >
               Remove from profile
             </Button>
@@ -345,7 +352,7 @@ const Content = ({ p2p, content, renderRow }) => {
                 await p2p.delete(content.rawJSON.url, deleteFiles)
                 history.push('/')
               }}
-              id='content-delete'
+              id='tour-content-delete'
             >
               Delete content
             </Button>
@@ -359,8 +366,9 @@ const Content = ({ p2p, content, renderRow }) => {
             steps.push({
               content: (
                 <div>
-                  Congratulations, you're now looking at your own work in Hypergraph!
-                  Let's click through all the different features on this page.
+                  Congratulations, you're now looking at your own work in
+                  Hypergraph! Let's click through all the different features on
+                  this page.
                 </div>
               )
             })
@@ -368,43 +376,47 @@ const Content = ({ p2p, content, renderRow }) => {
             steps.push({
               content: (
                 <div>
-                  You're now reading someone else's work on Hypergraph!
-                  Let's click through all the different features on this page.
+                  You're now reading someone else's work on Hypergraph! Let's
+                  click through all the different features on this page.
                 </div>
               )
             })
             steps.push({
-              selector: '#content-subtype',
+              selector: '#tour-content-subtype',
               content: <div>The type of information contained.</div>
             })
           }
           if (parents.length > 0) {
             steps.push({
-              selector: '#content-parents',
+              selector: '#tour-content-parents',
               content: (
                 <div>
                   This shows which research steps directly preceded this one.
-                  Hover to see what content this follows from and click to go to that content.<br />
+                  Hover to see what content this follows from and click to go to
+                  that content.
                   <br />
-                  We're working on expanding this so you can navigate back and forth
-                  and view a larger map displaying multiple levels of connections.
+                  <br />
+                  We're working on expanding this so you can navigate back and
+                  forth and view a larger map displaying multiple levels of
+                  connections.
                 </div>
               )
             })
           }
           if (!content.metadata.isWritable) {
             steps.push({
-              selector: '#content-files',
+              selector: '#tour-content-files',
               content: (
                 <div>
-                  You can click on the files to directly open them.
-                  The <i>Main file</i> is the most important one and generally where you should start.
+                  You can click on the files to directly open them. The{' '}
+                  <i>Main file</i> is the most important one and generally where
+                  you should start.
                 </div>
               )
             })
           }
           steps.push({
-            selector: '#content-share',
+            selector: '#tour-content-share',
             content: (
               <div>
                 Like with profiles, you can share links directly to content.
@@ -413,78 +425,85 @@ const Content = ({ p2p, content, renderRow }) => {
           })
           if (content.metadata.isWritable) {
             steps.push({
-              selector: '#content-openfolder',
+              selector: '#tour-content-openfolder',
               content: (
                 <div>
-                  This opens the folder on your computer, so you can easily make updates to your work.
-                  Please note that the files are read-only if you're looking at an older version.
+                  This opens the folder on your computer, so you can easily make
+                  updates to your work. Please note that the files are read-only
+                  if you're looking at an older version.
                 </div>
               )
             })
           } else {
             steps.push({
-              selector: '#content-openfolder',
+              selector: '#tour-content-openfolder',
               content: (
                 <div>
-                  This opens the folder on your computer.
-                  Please note that the files are read-only by default for other people's content.
-                  If you want to make changes, you should copy the files elsewhere.
+                  This opens the folder on your computer. Please note that the
+                  files are read-only by default for other people's content. If
+                  you want to make changes, you should copy the files elsewhere.
                 </div>
               )
             })
           }
           steps.push({
-            selector: '#content-export',
+            selector: '#tour-content-export',
             content: <div>This exports the content as a ZIP archive.</div>
           })
           if (content.metadata.isWritable) {
             if (canRegisterContent) {
               steps.push({
-                selector: '#content-register',
+                selector: '#tour-content-register',
                 content: (
                   <div>
-                    The <i>Add to profile</i> button makes the content available to everyone who has your profile link.
-                    You can always choose to update it later or remove it from your profile.
+                    The <i>Add to profile</i> button makes the content available
+                    to everyone who has your profile link. You can always choose
+                    to update it later or remove it from your profile.
                   </div>
                 )
               })
             }
             if (canDeregisterContent) {
               steps.push({
-                selector: '#content-deregister',
+                selector: '#tour-content-deregister',
                 content: (
                   <div>
-                    The <i>Remove from profile</i> button updates your profile to remove this piece of content.
-                    This doesn't make it inaccessible to others, but does make it harder for others to find.
+                    The <i>Remove from profile</i> button updates your profile
+                    to remove this piece of content. This doesn't make it
+                    inaccessible to others, but does make it harder for others
+                    to find.
                   </div>
                 )
               })
             }
             steps.push({
-              selector: '#content-delete',
+              selector: '#tour-content-delete',
               content: (
                 <div>
                   This deletes this content from your profile and your computer.
-                  It has no effect on other people's computers, so it may remain accessible if others also have this content.
+                  It has no effect on other people's computers, so it may remain
+                  accessible if others also have this content.
                 </div>
               )
             })
             if (canRegisterContent) {
               steps.push({
-                selector: '#menu-drafts',
+                selector: '#tour-menu-drafts',
                 content: (
                   <div>
-                    Now, shall we take a look at your drafts to see how this content looks there?
+                    Now, shall we take a look at your drafts to see how this
+                    content looks there?
                   </div>
                 )
               })
             }
             if (canDeregisterContent) {
               steps.push({
-                selector: '#menu-profile',
+                selector: '#tour-menu-profile',
                 content: (
                   <div>
-                    Now, shall we take a look at your profile to see how this content looks there?
+                    Now, shall we take a look at your profile to see how this
+                    content looks there?
                   </div>
                 )
               })

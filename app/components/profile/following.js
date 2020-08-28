@@ -34,7 +34,9 @@ const Following = ({ p2p }) => {
   const [following, setFollowing] = useState()
   const [unfollowed, setUnfollowed] = useState({})
   const { url: profileUrl } = useContext(ProfileContext)
-  const { tour: [isTourOpen, setIsTourOpen] } = useContext(TourContext)
+  const {
+    tour: [isTourOpen, setIsTourOpen]
+  } = useContext(TourContext)
   const history = useHistory()
 
   useEffect(() => {
@@ -59,7 +61,11 @@ const Following = ({ p2p }) => {
           {following.map((profile, i) => {
             const url = `/profiles/${encode(profile.rawJSON.url)}`
             return (
-              <Row noBorderTop key={profile.rawJSON.url} id={`profilerow-${i}`}>
+              <Row
+                noBorderTop
+                key={profile.rawJSON.url}
+                id={`tour-profilerow-${i}`}
+              >
                 <Tabbable component={Profile} onClick={() => history.push(url)}>
                   <StyledAvatar name={profile.rawJSON.title} size='40px' />
                   <Heading3>{profile.rawJSON.title}</Heading3>
@@ -91,7 +97,6 @@ const Following = ({ p2p }) => {
                         encode(profile.rawJSON.url)
                       )
                     }}
-                    id={`profilerow-${i}-unfollow`}
                   >
                     Unfollow
                   </StyledButton>
@@ -110,26 +115,34 @@ const Following = ({ p2p }) => {
       )}
       <Tour
         steps={(() => {
-          const steps = [{
-            content: <div>This displays all the profiles you follow.</div>
-          }]
+          const steps = [
+            {
+              content: <div>This displays all the profiles you follow.</div>
+            }
+          ]
           if (!following || !following.length) {
             steps.push({
-              selector: '#menu-find',
-              content: <div>Click <i>Find</i> to look up a profile to follow.</div>
+              selector: '#tour-menu-find',
+              content: (
+                <div>
+                  Click <i>Find</i> to look up a profile to follow.
+                </div>
+              )
             })
           }
           if (following && following.length) {
             steps.push({
-              selector: '#profilerow-0',
-              content: <div>Click to open a profile...</div>,
-              action: () => {
-                document.getElementById('profilerow-0-unfollow').style.display = 'block'
-              }
+              selector: '#tour-profilerow-0',
+              content: <div>Click to open a profile...</div>
             })
             steps.push({
-              selector: '#profilerow-0-unfollow',
-              content: <div>...or use the <i>Unfollow</i> buttons to quickly clean up your feed.</div>
+              selector: '#tour-profilerow-0',
+              content: (
+                <div>
+                  ...or use the <i>Unfollow</i> buttons to quickly clean up your
+                  feed.
+                </div>
+              )
             })
           }
           return steps

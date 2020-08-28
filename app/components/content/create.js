@@ -76,7 +76,9 @@ const Create = ({ p2p }) => {
   const history = useHistory()
   const { parentUrl } = useParams()
   const { url: profileUrl } = useContext(ProfileContext)
-  const { tour: [isTourOpen, setIsTourOpen] } = useContext(TourContext)
+  const {
+    tour: [isTourOpen, setIsTourOpen]
+  } = useContext(TourContext)
   const formRef = useRef()
 
   useEffect(() => {
@@ -173,7 +175,7 @@ const Create = ({ p2p }) => {
           }}
         >
           {potentialParents && potentialParents.length > 0 && (
-            <div id='create-parent'>
+            <div id='tour-create-parent'>
               <Label htmlFor='parent'>Follows from</Label>
               <Select name='parent' defaultValue={parentUrl}>
                 <option />
@@ -191,7 +193,7 @@ const Create = ({ p2p }) => {
               </Select>
             </div>
           )}
-          <div id='create-subtype'>
+          <div id='tour-create-subtype'>
             <Label htmlFor='subtype'>Content type</Label>
             <Select large name='subtype'>
               {Object.entries(subtypes).map(([id, text]) => (
@@ -201,7 +203,7 @@ const Create = ({ p2p }) => {
               ))}
             </Select>
           </div>
-          <div id='create-files'>
+          <div id='tour-create-files'>
             <Label htmlFor='files'>Add files</Label>
             <Button
               type='button'
@@ -250,7 +252,7 @@ const Create = ({ p2p }) => {
               ))}
             </Files>
           </div>
-          <div id='create-main'>
+          <div id='tour-create-main'>
             <Label htmlFor='main'>Main file</Label>
             <Select name='main' onChange={ev => setMain(ev.target.value)}>
               <option value=''>No main</option>
@@ -263,15 +265,15 @@ const Create = ({ p2p }) => {
                 ))}
             </Select>
           </div>
-          <div id='create-title'>
+          <div id='tour-create-title'>
             <Label htmlFor='title'>Title</Label>
             <TitleInput name='title' onIsValid={setIsValidDraft} />
           </div>
-          <div id='create-description'>
+          <div id='tour-create-description'>
             <Label htmlFor='description'>Description</Label>
             <Textarea name='description' />
           </div>
-          <div id='create-buttons'>
+          <div id='tour-create-buttons'>
             <Button
               type='button'
               isLoading={isCreating && isCreating.register}
@@ -300,112 +302,140 @@ const Create = ({ p2p }) => {
       </Container>
       <Tour
         steps={(() => {
-          const steps = [{
-            content: (
-              <div>
-                Creating content <i>as-you-go</i>, how exciting!<br />
-                Even if you're part of the way through a project,
-                you can just start with the step you're working on now.
-              </div>
-            )
-          }]
-          if (potentialParents && potentialParents.length > 0) {
-            steps.push({
-              selector: '#create-parent',
+          const steps = [
+            {
               content: (
                 <div>
-                  What's the previous step of this research?
-                  It could be your own content or someone else's,
-                  but it has to be listed on someone's profile to be eligible for selection.<br />
+                  Creating content <i>as-you-go</i>, how exciting!
                   <br />
-                  Selection of multiple <i>Follows from</i> items will be possible soon,
-                  because research doesn't always go in a straight line. 😉
+                  Even if you're part of the way through a project, you can just
+                  start with the step you're working on now.
+                </div>
+              )
+            }
+          ]
+          if (potentialParents && potentialParents.length > 0) {
+            steps.push({
+              selector: '#tour-create-parent',
+              content: (
+                <div>
+                  What's the previous step of this research? It could be your
+                  own content or someone else's, but it has to be listed on
+                  someone's profile to be eligible for selection.
+                  <br />
+                  <br />
+                  Selection of multiple <i>Follows from</i> items will be
+                  possible soon, because research doesn't always go in a
+                  straight line. 😉
                 </div>
               )
             })
           }
           steps.push({
-            selector: '#create-subtype',
+            selector: '#tour-create-subtype',
             content: (
               <div>
-                This indicates what kind of information you're adding.<br />
+                This indicates what kind of information you're adding.
                 <br />
-                At the start of a project, this is likely to be a <i>Theory</i>, <i>Idea</i> or <i>Problem statement</i>,
-                but could be something else. Perhaps you developed your <i>Hypothesis</i> first?
-                Or you wrote some <i>Code</i> to analyse an existing data set?<br />
+                <br />
+                At the start of a project, this is likely to be a <i>
+                  Theory
+                </i>, <i>Idea</i> or <i>Problem statement</i>, but could be
+                something else. Perhaps you developed your <i>Hypothesis</i>{' '}
+                first? Or you wrote some <i>Code</i> to analyse an existing data
+                set?
+                <br />
                 <br />
                 If you're missing an option, let us know via the chat!
               </div>
             )
           })
           steps.push({
-            selector: '#create-files',
+            selector: '#tour-create-files',
             content: (
               <div>
-                These files are copied to the Hypergraph folder on your computer.
-                If you want to keep working on this content,
-                you can either continue working on Hypergraph's copies or reimport the files when you're done.<br />
+                These files are copied to the Hypergraph folder on your
+                computer. If you want to keep working on this content, you can
+                either continue working on Hypergraph's copies or reimport the
+                files when you're done.
                 <br />
-                If you're adding in-progress or completed research,
-                you might need to copy-paste text from your existing files into new files to separate out the different steps.<br />
                 <br />
-                You need to add at least one file to be able to share content or add it to your profile.
+                If you're adding in-progress or completed research, you might
+                need to copy-paste text from your existing files into new files
+                to separate out the different steps.
+                <br />
+                <br />
+                You need to add at least one file to be able to share content or
+                add it to your profile.
               </div>
             )
           })
           steps.push({
-            selector: '#create-main',
+            selector: '#tour-create-main',
             content: (
               <div>
-                Select the file that you want readers to open first.
-                This could be a document that ties all other files together.
-                If you only have one file, select that as the <i>main file</i>.
-                Other files will be <i>supporting files</i>.<br />
+                Select the file that you want readers to open first. This could
+                be a document that ties all other files together. If you only
+                have one file, select that as the <i>main file</i>. Other files
+                will be <i>supporting files</i>.<br />
                 <br />
-                You need to select a <i>main file</i> to be able to share content or add it to your profile.
+                You need to select a <i>main file</i> to be able to share
+                content or add it to your profile.
               </div>
             )
           })
           steps.push({
-            selector: '#create-title',
+            selector: '#tour-create-title',
             content: (
               <div>
-                Differently from traditional articles, each step of your research has its own title.
-                Try to be descriptive of what's included in this specific piece of content.<br />
+                Differently from traditional articles, each step of your
+                research has its own title. Try to be descriptive of what's
+                included in this specific piece of content.
                 <br />
-                If you're feeling stuck, you could go with a simple <i>"&lt;Content type&gt; for &lt;study title&gt;"</i>
-                or even just use the title of your study. The content type will always display,
-                so readers can easily differentiate between the different steps of your research.
+                <br />
+                If you're feeling stuck, you could go with a simple{' '}
+                <i>"&lt;Content type&gt; for &lt;study title&gt;"</i>
+                or even just use the title of your study. The content type will
+                always display, so readers can easily differentiate between the
+                different steps of your research.
               </div>
             )
           })
           steps.push({
-            selector: '#create-description',
+            selector: '#tour-create-description',
             content: (
               <div>
                 How would you briefly explain to someone what you're sharing?
-                You could give a short summary, perhaps list some characteristics of the research you've done.
-                Try to be descriptive of the research overall, but also specific to this step of your research.<br />
+                You could give a short summary, perhaps list some
+                characteristics of the research you've done. Try to be
+                descriptive of the research overall, but also specific to this
+                step of your research.
                 <br />
-                If you're feeling stuck, try to think how you'd write an abstract,
-                but only for this step of the research.
+                <br />
+                If you're feeling stuck, try to think how you'd write an
+                abstract, but only for this step of the research.
               </div>
             )
           })
           steps.push({
-            selector: '#create-buttons',
+            selector: '#tour-create-buttons',
             content: (
               <div>
-                <i>Add to profile</i> makes this work publicly accessible.
-                You can still update it at any time and choose to add the newer version to your profile.
-                It's OK if your work isn't completely finished yet, as long as you are ready to share! 😊<br />
+                <i>Add to profile</i> makes this work publicly accessible. You
+                can still update it at any time and choose to add the newer
+                version to your profile. It's OK if your work isn't completely
+                finished yet, as long as you are ready to share! 😊
                 <br />
-                <i>Save as draft</i> keeps this work just for you, until you decide to share it on your profile or with a link.<br />
                 <br />
-                If you want to create the next research step, you have to add this one to your profile first.
-                One step at a time! If you're working on multiple steps at once,
-                then perhaps they don't follow from each other...
-                Or perhaps the first step is "ready enough" to go online?
+                <i>Save as draft</i> keeps this work just for you, until you
+                decide to share it on your profile or with a link.
+                <br />
+                <br />
+                If you want to create the next research step, you have to add
+                this one to your profile first. One step at a time! If you're
+                working on multiple steps at once, then perhaps they don't
+                follow from each other... Or perhaps the first step is "ready
+                enough" to go online?
               </div>
             )
           })

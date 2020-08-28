@@ -194,7 +194,6 @@ const Row = ({ p2p, content, pad, to, isParent, id }) => {
                 }`
               )
             }}
-            id={`${id}-addcontentwithparent`}
           />
         )}
       </Tabbable>

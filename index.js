@@ -141,6 +141,10 @@ const createMainWindow = async () => {
         role: 'help',
         submenu: [
           {
+            label: 'Reopen tour',
+            click: () => win.webContents.send('reopen tour')
+          },
+          {
             label: 'Credits',
             click: () =>
               shell.openExternal(

@@ -49,7 +49,10 @@ const FindModal = ({ onClose, prefilledUrl, p2p }) => {
   const [isLoading, setIsLoading] = useState()
   const [url, setUrl] = useState(prefilledUrl)
   const [isUnavailable, setIsUnavailable] = useState()
-  const { tour: [, setIsTourOpen], modalTour: [isModalTourOpen, setIsModalTourOpen] } = useContext(TourContext)
+  const {
+    tour: [, setIsTourOpen],
+    modalTour: [isModalTourOpen, setIsModalTourOpen]
+  } = useContext(TourContext)
   const inputEl = useRef()
   const clonePromise = useRef()
   const history = useHistory()
@@ -115,7 +118,7 @@ const FindModal = ({ onClose, prefilledUrl, p2p }) => {
               }
             }
           }}
-          id='find-form'
+          id='tour-find-form'
         >
           <Label>
             URL
@@ -149,13 +152,17 @@ const FindModal = ({ onClose, prefilledUrl, p2p }) => {
       <Tour
         steps={[
           {
-            selector: '#find-form',
+            selector: '#tour-find-form',
             content: (
               <div>
-                Perhaps you already know someone using Hypergraph? Paste their profile URL here to view it.
-                Otherwise, try this example content: hypergraph://d1c36fd97f224667bb6fdec0443988a03d090ed98253d13e5e851a9fcc996802.
-                ⚠ If you're getting an error message, please retry a couple of times.
-                If the profile you're looking for isn't hosted in the Vault, it could be that no one with the data is currently online.
+                Perhaps you already know someone using Hypergraph? Paste their
+                profile URL here to view it. Otherwise, try this example
+                content:
+                hypergraph://d1c36fd97f224667bb6fdec0443988a03d090ed98253d13e5e851a9fcc996802.
+                ⚠ If you're getting an error message, please retry a couple of
+                times. If the profile you're looking for isn't hosted in the
+                Vault, it could be that no one with the data is currently
+                online.
               </div>
             ),
             style: {

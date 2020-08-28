@@ -10,7 +10,6 @@ import CreateContent from './components/content/create'
 import Following from './components/profile/following'
 import ShowContent from './components/content/show'
 import Feed from './components/feed/feed'
-import ReopenTour from './components/tour/reopen'
 import P2P from '@p2pcommons/sdk-js'
 import { HashRouter as Router, Switch, Route } from 'react-router-dom'
 import { remote, ipcRenderer } from 'electron'
@@ -141,20 +140,32 @@ const App = () => {
       setFindModalUrl(url)
       setIsFinding(true)
     })
+    ipcRenderer.on('reopen tour', () => {
+      setIsTourOpen(true)
+    })
   }, [])
 
   if (loading) return <Container />
   if (!profileUrl) {
     return (
       <Container>
-        <Welcome p2p={p2p} setProfileUrl={setProfileUrl} setIsTourOpen={setIsTourOpen} />
+        <Welcome
+          p2p={p2p}
+          setProfileUrl={setProfileUrl}
+          setIsTourOpen={setIsTourOpen}
+        />
       </Container>
     )
   }
 
   return (
     <ProfileContext.Provider value={{ url: profileUrl }}>
-      <TourContext.Provider value={{ tour: [isTourOpen, setIsTourOpen], modalTour: [isModalTourOpen, setIsModalTourOpen] }}>
+      <TourContext.Provider
+        value={{
+          tour: [isTourOpen, setIsTourOpen],
+          modalTour: [isModalTourOpen, setIsModalTourOpen]
+        }}
+      >
         <Container onFind={() => setIsFinding(true)}>
           {isFinding && (
             <FindModal
@@ -190,9 +201,6 @@ const App = () => {
             </Route>
             <Route path='/contents/:key/:version?'>
               <ShowContent p2p={p2p} />
-            </Route>
-            <Route path='/tour/reopen'>
-              <ReopenTour />
             </Route>
           </Switch>
         </Container>

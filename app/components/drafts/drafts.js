@@ -21,7 +21,9 @@ export default ({ p2p }) => {
   const [drafts, setDrafts] = useState()
   const [hasRegisteredContent, setHasRegisteredContent] = useState()
   const { url: profileUrl } = useContext(ProfileContext)
-  const { tour: [isTourOpen, setIsTourOpen] } = useContext(TourContext)
+  const {
+    tour: [isTourOpen, setIsTourOpen]
+  } = useContext(TourContext)
 
   useEffect(() => {
     ;(async () => {
@@ -51,7 +53,7 @@ export default ({ p2p }) => {
                 p2p={p2p}
                 content={draft}
                 to={`/drafts/${encode(draft.rawJSON.url)}`}
-                id={`contentrow-${i}`}
+                id={`tour-contentrow-${i}`}
               />
             )
           })}
@@ -74,23 +76,30 @@ export default ({ p2p }) => {
       )}
       <Tour
         steps={(() => {
-          const steps = [{
-            content: (
-              <div>
-                This is where all your in-progress work lives,
-                whether it's completely new or simply a newer version of content that's on your profile.
-              </div>
-            )
-          }]
+          const steps = [
+            {
+              content: (
+                <div>
+                  This is where all your in-progress work lives, whether it's
+                  completely new or simply a newer version of content that's on
+                  your profile.
+                </div>
+              )
+            }
+          ]
           if (drafts && drafts.length) {
             steps.push({
-              selector: '#contentrow-0',
+              selector: '#tour-contentrow-0',
               content: <div>Click on a piece of content to open it, or...</div>
             })
           }
           steps.push({
-            selector: '#menu-create',
-            content: <div>Click the + icon in the bottom-left to add something new.</div>
+            selector: '#tour-menu-create',
+            content: (
+              <div>
+                Click the + icon in the bottom-left to add something new.
+              </div>
+            )
           })
           return steps
         })()}
