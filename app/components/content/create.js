@@ -340,10 +340,9 @@ const Create = ({ p2p }) => {
                 <br />
                 At the start of a project, this is likely to be a <i>
                   Theory
-                </i>, <i>Idea</i> or <i>Problem statement</i>, but could be
-                something else. Perhaps you developed your <i>Hypothesis</i>{' '}
-                first? Or you wrote some <i>Code</i> to analyse an existing data
-                set?
+                </i>, <i>Idea</i> or <i>Plan</i>, but could be something else.
+                Perhaps you developed your <i>Hypothesis</i> first? Or you wrote
+                a <i>Script</i> to analyse an existing data set?
                 <br />
                 <br />
                 If you're missing an option, let us know via the chat!
@@ -357,7 +356,8 @@ const Create = ({ p2p }) => {
                 These files are copied to the Hypergraph folder on your
                 computer. If you want to keep working on this content, you can
                 either continue working on Hypergraph's copies or reimport the
-                files when you're done.
+                files when you're done. If you have the Vault enabled, adding
+                content to your profile means the files also get uploaded there.
                 <br />
                 <br />
                 If you're adding in-progress or completed research, you might
