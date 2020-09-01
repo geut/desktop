@@ -355,7 +355,7 @@ const Content = ({ p2p, contentKey: key, version, renderRow }) => {
 
                 setIsDeleting(true)
                 const deleteFiles = true
-                await p2p.delete(content.rawJSON.url, deleteFiles)
+                await p2p.delete(encode(content.rawJSON.url), deleteFiles)
                 history.push('/')
               }}
             >
