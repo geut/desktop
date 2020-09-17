@@ -17,7 +17,6 @@ export default ({ p2p }) => {
         .map(row => row.url.split('+'))
         .filter(([_, version]) => Boolean(version))
       urls.length = 10
-      console.log({ urls })
       const contents = await Promise.all(
         urls.map(async ([key, version]) => {
           const p = p2p.clone(encode(key), version)
@@ -32,7 +31,6 @@ export default ({ p2p }) => {
           return content
         })
       )
-      console.log({ contents })
       setContents(contents.filter(Boolean))
     })()
   }, [])
