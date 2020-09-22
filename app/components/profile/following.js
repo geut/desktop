@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 import styled from 'styled-components'
 import { TopRow, Row, Title, Button } from '../layout/grid'
-import { ProfileContext, TourContext } from '../../lib/context'
+import { ProfileContext } from '../../lib/context'
 import { Heading3 } from '../typography'
 import Avatar from '../avatar/avatar'
 import { useHistory } from 'react-router-dom'
@@ -33,9 +33,6 @@ const Following = ({ p2p }) => {
   const [following, setFollowing] = useState()
   const [unfollowed, setUnfollowed] = useState({})
   const { url: profileUrl } = useContext(ProfileContext)
-  const {
-    tour: [isTourOpen, setIsTourOpen]
-  } = useContext(TourContext)
   const history = useHistory()
 
   useEffect(() => {
@@ -60,11 +57,7 @@ const Following = ({ p2p }) => {
           {following.map((profile, i) => {
             const url = `/profiles/${encode(profile.rawJSON.url)}`
             return (
-              <Row
-                noBorderTop
-                key={profile.rawJSON.url}
-                id={`tour-profilerow-${i}`}
-              >
+              <Row noBorderTop key={profile.rawJSON.url}>
                 <Tabbable component={Profile} onClick={() => history.push(url)}>
                   <StyledAvatar name={profile.rawJSON.title} size='40px' />
                   <Heading3>{profile.rawJSON.title}</Heading3>

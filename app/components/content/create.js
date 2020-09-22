@@ -15,7 +15,7 @@ import { encode } from 'dat-encoding'
 import { useHistory, useParams } from 'react-router-dom'
 import Anchor from '../anchor'
 import Store from 'electron-store'
-import { ProfileContext, TourContext } from '../../lib/context'
+import { ProfileContext } from '../../lib/context'
 import Tabbable from '../accessibility/tabbable'
 
 const { FormData } = window
@@ -75,9 +75,6 @@ const Create = ({ p2p }) => {
   const history = useHistory()
   const { parentUrl } = useParams()
   const { url: profileUrl } = useContext(ProfileContext)
-  const {
-    tour: [isTourOpen, setIsTourOpen]
-  } = useContext(TourContext)
   const formRef = useRef()
 
   useEffect(() => {
@@ -174,7 +171,7 @@ const Create = ({ p2p }) => {
           }}
         >
           {potentialParents && potentialParents.length > 0 && (
-            <div id='tour-create-parent'>
+            <div>
               <Label htmlFor='parent'>Follows from</Label>
               <Select name='parent' defaultValue={parentUrl}>
                 <option />
@@ -192,7 +189,7 @@ const Create = ({ p2p }) => {
               </Select>
             </div>
           )}
-          <div id='tour-create-subtype'>
+          <div>
             <Label htmlFor='subtype'>Content type</Label>
             <Select large name='subtype'>
               {Object.entries(subtypes).map(([id, text]) => (
@@ -202,7 +199,7 @@ const Create = ({ p2p }) => {
               ))}
             </Select>
           </div>
-          <div id='tour-create-files'>
+          <div>
             <Label htmlFor='files'>Add files</Label>
             <Button
               type='button'
@@ -251,7 +248,7 @@ const Create = ({ p2p }) => {
               ))}
             </Files>
           </div>
-          <div id='tour-create-main'>
+          <div>
             <Label htmlFor='main'>Main file</Label>
             <Select name='main' onChange={ev => setMain(ev.target.value)}>
               <option value=''>No main</option>
@@ -264,15 +261,15 @@ const Create = ({ p2p }) => {
                 ))}
             </Select>
           </div>
-          <div id='tour-create-title'>
+          <div>
             <Label htmlFor='title'>Title</Label>
             <TitleInput name='title' onIsValid={setIsValidDraft} />
           </div>
-          <div id='tour-create-description'>
+          <div>
             <Label htmlFor='description'>Description</Label>
             <Textarea name='description' />
           </div>
-          <div id='tour-create-buttons'>
+          <div>
             <Button
               type='button'
               isLoading={isCreating && isCreating.register}

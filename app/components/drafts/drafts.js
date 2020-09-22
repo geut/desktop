@@ -6,7 +6,7 @@ import Footer from '../footer/footer'
 import AddContent from '../icons/add-content.svg'
 import styled from 'styled-components'
 import isContentRegistered from '../../lib/is-content-registered'
-import { ProfileContext, TourContext } from '../../lib/context'
+import { ProfileContext } from '../../lib/context'
 import sort from '../../lib/sort'
 
 const StyledAddContent = styled(AddContent)`
@@ -20,9 +20,6 @@ export default ({ p2p }) => {
   const [drafts, setDrafts] = useState()
   const [hasRegisteredContent, setHasRegisteredContent] = useState()
   const { url: profileUrl } = useContext(ProfileContext)
-  const {
-    tour: [isTourOpen, setIsTourOpen]
-  } = useContext(TourContext)
 
   useEffect(() => {
     ;(async () => {
@@ -52,7 +49,6 @@ export default ({ p2p }) => {
                 p2p={p2p}
                 content={draft}
                 to={`/drafts/${encode(draft.rawJSON.url)}`}
-                id={`tour-contentrow-${i}`}
               />
             )
           })}

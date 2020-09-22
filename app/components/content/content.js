@@ -12,7 +12,7 @@ import AdmZip from 'adm-zip'
 import { Label } from '../forms/forms'
 import subtypes from '@hypergraph-xyz/wikidata-identifiers'
 import newlinesToBr from '../../lib/newlines-to-br'
-import { ProfileContext, TourContext } from '../../lib/context'
+import { ProfileContext } from '../../lib/context'
 import isContentRegistered from '../../lib/is-content-registered'
 import Share from '../icons/share.svg'
 import ShareModal from './share-modal'
@@ -117,9 +117,6 @@ const Content = ({ p2p, content, renderRow }) => {
   const [canRegisterContent, setCanRegisterContent] = useState()
   const [canDeregisterContent, setCanDeregisterContent] = useState()
   const [isSharing, setIsSharing] = useState()
-  const {
-    tour: [isTourOpen, setIsTourOpen]
-  } = useContext(TourContext)
   const history = useHistory()
   const { url: profileUrl } = useContext(ProfileContext)
 
@@ -194,23 +191,17 @@ const Content = ({ p2p, content, renderRow }) => {
       )}
       {renderRow(
         <>
-          <Title id='tour-content-subtype'>
-            {subtypes[content.rawJSON.subtype] || 'Content'}
-          </Title>
+          <Title>{subtypes[content.rawJSON.subtype] || 'Content'}</Title>
           {content.rawJSON.main && (
             <Button
               content='icon'
               type='button'
               onClick={() => setIsSharing(true)}
-              id='tour-content-share'
             >
               <Share />
             </Button>
           )}
-          <Button
-            onClick={() => remote.shell.openPath(directory)}
-            id='tour-content-openfolder'
-          >
+          <Button onClick={() => remote.shell.openPath(directory)}>
             Open folder
           </Button>
           <ExportZip directory={directory} />
@@ -218,7 +209,7 @@ const Content = ({ p2p, content, renderRow }) => {
       )}
       <Container>
         <Tabbable component={BackArrow} onClick={() => history.go(-1)} />
-        <div id='tour-#content-parents'>
+        <div>
           {parents.map(parent => (
             <Link
               component={Parent}
@@ -248,7 +239,7 @@ const Content = ({ p2p, content, renderRow }) => {
           )
         })}
         <Description>{newlinesToBr(content.rawJSON.description)}</Description>
-        <div id='tour-content-files'>
+        <div>
           <Label>Main file</Label>
           {content.rawJSON.main ? (
             <Tabbable
@@ -302,7 +293,6 @@ const Content = ({ p2p, content, renderRow }) => {
                 }
                 await fetchAuthors()
               }}
-              id='tour-content-register'
             >
               Add to profile
             </Button>
@@ -325,7 +315,6 @@ const Content = ({ p2p, content, renderRow }) => {
                 }
                 await fetchAuthors()
               }}
-              id='tour-content-deregister'
             >
               Remove from profile
             </Button>
@@ -351,7 +340,6 @@ const Content = ({ p2p, content, renderRow }) => {
                 await p2p.delete(content.rawJSON.url, deleteFiles)
                 history.push('/')
               }}
-              id='tour-content-delete'
             >
               Delete content
             </Button>

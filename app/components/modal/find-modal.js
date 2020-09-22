@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from 'react'
+import React, { useState, useRef } from 'react'
 import styled, { css } from 'styled-components'
 import Modal, { Close } from './modal'
 import { Heading2, Paragraph } from '../typography'
@@ -10,7 +10,6 @@ import Loading from '../loading/loading'
 import { gray, red, yellow } from '../../lib/colors'
 import { useHistory } from 'react-router-dom'
 import { encode } from 'dat-encoding'
-import { TourContext } from '../../lib/context'
 
 const StyledButton = styled(Button)`
   margin-right: 0;
@@ -48,10 +47,6 @@ const FindModal = ({ onClose, prefilledUrl, p2p }) => {
   const [isLoading, setIsLoading] = useState()
   const [url, setUrl] = useState(prefilledUrl)
   const [isUnavailable, setIsUnavailable] = useState()
-  const {
-    tour: [, setIsTourOpen],
-    modalTour: [isModalTourOpen, setIsModalTourOpen]
-  } = useContext(TourContext)
   const inputEl = useRef()
   const clonePromise = useRef()
   const history = useHistory()
@@ -111,13 +106,8 @@ const FindModal = ({ onClose, prefilledUrl, p2p }) => {
                 const url = version ? `${encode(key)}/${version}` : encode(key)
                 history.push(`/contents/${url}`)
               }
-              if (isModalTourOpen) {
-                setIsModalTourOpen(false)
-                setIsTourOpen(true)
-              }
             }
           }}
-          id='tour-find-form'
         >
           <Label>
             URL

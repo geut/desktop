@@ -11,7 +11,7 @@ import Share from '../icons/share.svg'
 import { useParams } from 'react-router-dom'
 import ShareModal from './share-modal'
 import sort from '../../lib/sort'
-import { ProfileContext, TourContext } from '../../lib/context'
+import { ProfileContext } from '../../lib/context'
 
 const Header = styled.div`
   position: relative;
@@ -129,13 +129,8 @@ const Profile = ({ p2p }) => {
   const [isSharing, setIsSharing] = useState()
   const [nameForAvatar, setNameForAvatar] = useState()
   const [ownProfile, setOwnProfile] = useState()
-  const [isOwnProfile, setIsOwnProfile] = useState()
   const [isFollowed, setIsFollowed] = useState()
   const { url: ownProfileUrl } = useContext(ProfileContext)
-  const {
-    tour: [isTourOpen, setIsTourOpen]
-  } = useContext(TourContext)
-  const [tourStep, setTourStep] = useState(0)
   const titleRef = useRef()
   const descriptionRef = useRef()
 
@@ -156,9 +151,6 @@ const Profile = ({ p2p }) => {
 
   const onSubmit = async e => {
     e.preventDefault()
-    const tourWasOpen = isTourOpen
-    setIsTourOpen(false)
-    setIsSaving(true)
     try {
       await p2p.set({
         url: profile.rawJSON.url,
@@ -177,8 +169,6 @@ const Profile = ({ p2p }) => {
     setIsEditing(false)
     setIsSaved(true)
     setTimeout(() => setIsSaved(false), 2000)
-    setTourStep(3)
-    setIsTourOpen(tourWasOpen)
     await fetchContents(profile)
   }
 
@@ -187,7 +177,6 @@ const Profile = ({ p2p }) => {
       setContents(null)
       const profile = await p2p.clone(encode(key), null, false /* download */)
       setProfile(profile)
-      setIsOwnProfile(profile.rawJSON.url === ownProfileUrl)
       setNameForAvatar(profile.rawJSON.title)
       await fetchContents(profile)
     })()
@@ -226,7 +215,7 @@ const Profile = ({ p2p }) => {
       )}
       <TopRow>
         <Form onSubmit={onSubmit}>
-          <Title id='tour-profile-title'>
+          <Title>
             <Indicator
               isEditing={isEditing}
               isSaving={isSaving}
@@ -248,7 +237,7 @@ const Profile = ({ p2p }) => {
               profile.rawJSON.title
             )}
           </Title>
-          <div id='tour-profile-follow-unfollow'>
+          <div>
             {isFollowed ? (
               <Button
                 type='button'
@@ -257,7 +246,6 @@ const Profile = ({ p2p }) => {
                     encode(ownProfile.rawJSON.url),
                     encode(profile.rawJSON.url)
                   )
-                  setTourStep(6)
                   await fetchOwnProfile()
                 }}
               >
@@ -271,7 +259,6 @@ const Profile = ({ p2p }) => {
                     encode(ownProfile.rawJSON.url),
                     encode(profile.rawJSON.url)
                   )
-                  setTourStep(6)
                   await fetchOwnProfile()
                 }}
               >
@@ -283,17 +270,12 @@ const Profile = ({ p2p }) => {
             content='icon'
             type='button'
             onClick={() => setIsSharing(true)}
-            id='tour-profile-share'
           >
             <Share />
           </Button>
           {isEditing ? (
             <>
-              <Button
-                color={green}
-                disabled={isTitleInvalid}
-                id='tour-profile-save'
-              >
+              <Button color={green} disabled={isTitleInvalid}>
                 Save
               </Button>
               <Button
@@ -311,14 +293,13 @@ const Profile = ({ p2p }) => {
               type='button'
               color={green}
               onClick={() => setIsEditing(true)}
-              id='tour-profile-edit'
             >
               Edit profile
             </Button>
           ) : null}
         </Form>
       </TopRow>
-      <Header id='tour-profile-header'>
+      <Header>
         <StyledAvatar name={nameForAvatar} />
         <Description
           isEditing={isEditing}
@@ -333,7 +314,6 @@ const Profile = ({ p2p }) => {
             ) {
               setIsEditing(true)
               setIsPopulatingDescription(true)
-              setTourStep(1)
             }
           }}
         >
@@ -358,7 +338,7 @@ const Profile = ({ p2p }) => {
         <Title>Content</Title>
       </StickyRow>
       {contents && (
-        <div id='tour-profile-content'>
+        <div>
           {contents.map((content, i) => {
             return (
               <ContentRow
@@ -368,7 +348,6 @@ const Profile = ({ p2p }) => {
                 to={`/profiles/${encode(profile.rawJSON.url)}/${encode(
                   content.rawJSON.url
                 )}`}
-                id={`tour-contentrow-${i}`}
               />
             )
           })}
