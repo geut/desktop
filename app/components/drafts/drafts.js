@@ -7,7 +7,6 @@ import AddContent from '../icons/add-content.svg'
 import styled from 'styled-components'
 import isContentRegistered from '../../lib/is-content-registered'
 import { ProfileContext, TourContext } from '../../lib/context'
-import Tour from '../tour/tour'
 import sort from '../../lib/sort'
 
 const StyledAddContent = styled(AddContent)`
@@ -74,38 +73,6 @@ export default ({ p2p }) => {
           />
         </>
       )}
-      <Tour
-        steps={(() => {
-          const steps = [
-            {
-              content: (
-                <div>
-                  This is where all your in-progress work lives, whether it's
-                  completely new or simply a newer version of content that's on
-                  your profile.
-                </div>
-              )
-            }
-          ]
-          if (drafts && drafts.length) {
-            steps.push({
-              selector: '#tour-contentrow-0',
-              content: <div>Click on a piece of content to open it, or...</div>
-            })
-          }
-          steps.push({
-            selector: '#tour-menu-create',
-            content: (
-              <div>
-                Click the + icon in the bottom-left to add something new.
-              </div>
-            )
-          })
-          return steps
-        })()}
-        isOpen={isTourOpen}
-        onRequestClose={() => setIsTourOpen(false)}
-      />
     </>
   )
 }

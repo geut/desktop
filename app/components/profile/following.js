@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from 'react'
 import styled from 'styled-components'
 import { TopRow, Row, Title, Button } from '../layout/grid'
 import { ProfileContext, TourContext } from '../../lib/context'
-import Tour from '../tour/tour'
 import { Heading3 } from '../typography'
 import Avatar from '../avatar/avatar'
 import { useHistory } from 'react-router-dom'
@@ -113,43 +112,6 @@ const Following = ({ p2p }) => {
           />
         </>
       )}
-      <Tour
-        steps={(() => {
-          const steps = [
-            {
-              content: <div>This displays all the profiles you follow.</div>
-            }
-          ]
-          if (!following || !following.length) {
-            steps.push({
-              selector: '#tour-menu-find',
-              content: (
-                <div>
-                  Click <i>Find</i> to look up a profile to follow.
-                </div>
-              )
-            })
-          }
-          if (following && following.length) {
-            steps.push({
-              selector: '#tour-profilerow-0',
-              content: <div>Click to open a profile...</div>
-            })
-            steps.push({
-              selector: '#tour-profilerow-0',
-              content: (
-                <div>
-                  ...or use the <i>Unfollow</i> buttons to quickly clean up your
-                  feed.
-                </div>
-              )
-            })
-          }
-          return steps
-        })()}
-        isOpen={isTourOpen}
-        onRequestClose={() => setIsTourOpen(false)}
-      />
     </div>
   )
 }

@@ -74,26 +74,62 @@ export default ({ p2p }) => {
             {
               content: (
                 <div>
-                  Want each part of Hypergraph explained? Then this tour is for
-                  you! Otherwise, you can always re-open it later through the{' '}
-                  <i>Help</i> menu.
-                </div>
-              )
-            },
-            {
-              selector: '#tour-chatra',
-              content: (
-                <div>
-                  We are available in the chat for questions and feedback. Feel
-                  free to say hello! 🙋🏻‍♀️🙋🏽‍♂️🙋🏿‍♀️
+                  <p>Welcome to Hypergraph (Beta) 🥳  We'll get you started with a short tour of the most important things.</p>
                 </div>
               )
             },
             {
               content: (
                 <div>
-                  The feed is where new content shows up once you follow people,
-                  so you can stay up-to-date on their work.
+                  <p>First things first: Creating a backup.</p>
+                  <p>We don't use passwords, but keys 🔑 Just like your house keys, you need to store them safely and not lose them.</p>
+                </div>
+              )
+            },
+            {
+              content: (
+                <div>
+                  <p>Create a backup by clicking{' '}<i>Database -> Back up database</i> in the menu bar (at the top).</p>
+                  <p>We cannot help you recover these so store them safely! Maybe your Dropbox, USB stick, or somewhere else 🤔</p>
+                </div>
+              )
+            },
+            {
+              content: (
+                <div>
+                  <p>Now we'll see where you can find what information.</p>
+                </div>
+              )
+            },
+            {
+              selector: '#tour-menu-feed',
+              content: (
+                <div>
+                  The feed tab shows all content in your network.
+                </div>
+              )
+            },
+            {
+              selector: '#tour-menu-drafts',
+              content: (
+                <div>
+                  The drafts tab shows your unfinished work and things you've co-authored but haven't added to your profile yet.
+                </div>
+              )
+            },
+            {
+              selector: '#tour-menu-profile',
+              content: (
+                <div>
+                  The profile tab allows you to see and update your profile.
+                </div>
+              )
+            },
+            {
+              selector: '#tour-menu-following',
+              content: (
+                <div>
+                  The following tab gives you a quick overview of the people in your network.
                 </div>
               )
             },
@@ -101,56 +137,27 @@ export default ({ p2p }) => {
               selector: '#tour-menu-find',
               content: (
                 <div>
-                  Here you can look up Hypergraph profiles and content. You can
-                  also search for things you've created or viewed previously.
-                  Click <i>Find</i> if you'd like to follow someone or continue
-                  to start adding content.
+                  You can open Hypergraph links here.
                 </div>
               )
             },
             {
               selector: '#tour-menu-create',
               content: (
-                <div>Click the + icon to add your work to Hypergraph.</div>
+                <div>Add your research steps by clicking this big button.</div>
+              )
+            },
+            {
+              selector: '#tour-chatra',
+              content: (
+                <div>
+                  <p>That's the most crucial bits already 😅</p>
+                  <p>If anything gets confusing, we're available in the chat on the bottom right (no bots!).</p> 
+                  <p>Feel free to say hello, ask a question, or give us feedback! 🙋🏻‍♀️ 🙋🏽‍♂️ 🙋🏿‍♀️</p>
+                </div>
               )
             }
           ]}
-          isOpen={isTourOpen}
-          onRequestClose={() => setIsTourOpen(false)}
-        />
-      )}
-      {follows.length > 0 && (
-        <Tour
-          steps={(() => {
-            const steps = [
-              {
-                content: (
-                  <div>
-                    If you've followed someone with content on their profile,
-                    you'll see their work here now. When new content arrives,
-                    your feed gets updated!.
-                  </div>
-                )
-              }
-            ]
-            if (contents.length) {
-              steps.push({
-                selector: '#tour-contentrow-0',
-                content: (
-                  <div>
-                    Move the mouse over to the right to add new content that
-                    follows from this. Build on top of work of others or simply
-                    add the next step in your research project.
-                  </div>
-                )
-              })
-            }
-            steps.push({
-              selector: '#tour-menu-profile',
-              content: <div>Now, let's take a look at your own profile!'</div>
-            })
-            return steps
-          })()}
           isOpen={isTourOpen}
           onRequestClose={() => setIsTourOpen(false)}
         />

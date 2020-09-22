@@ -11,7 +11,6 @@ import { gray, red, yellow } from '../../lib/colors'
 import { useHistory } from 'react-router-dom'
 import { encode } from 'dat-encoding'
 import { TourContext } from '../../lib/context'
-import Tour from '../tour/tour'
 
 const StyledButton = styled(Button)`
   margin-right: 0;
@@ -149,32 +148,6 @@ const FindModal = ({ onClose, prefilledUrl, p2p }) => {
           </StyledButton>
         </form>
       </Modal>
-      <Tour
-        steps={[
-          {
-            selector: '#tour-find-form',
-            content: (
-              <div>
-                Perhaps you already know someone using Hypergraph? Paste their
-                profile URL here to view it. Otherwise, try this example
-                content:
-                hypergraph://d1c36fd97f224667bb6fdec0443988a03d090ed98253d13e5e851a9fcc996802.
-                ⚠ If you're getting an error message, please retry a couple of
-                times. If the profile you're looking for isn't hosted in the
-                Vault, it could be that no one with the data is currently
-                online.
-              </div>
-            ),
-            style: {
-              maxWidth: '44em',
-              WebkitUserSelect: 'text'
-            }
-          }
-        ]}
-        isOpen={isModalTourOpen}
-        onRequestClose={() => setIsModalTourOpen(false)}
-        disableFocusLock
-      />
     </>
   )
 }
