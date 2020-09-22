@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, Fragment } from 'react'
 import styled from 'styled-components'
 import { green, yellow, red, gray } from '../../lib/colors'
 import { encode } from 'dat-encoding'
 import { Button, Title } from '../layout/grid'
 import { useHistory, Link } from 'react-router-dom'
 import Anchor from '../anchor'
-import Arrow from '../icons/arrow.svg'
-import { remote } from 'electron'
+import Arrow from '../icons/arrow-up-2rem.svg'
+import { remote, ipcRenderer } from 'electron'
 import { promises as fs } from 'fs'
 import AdmZip from 'adm-zip'
 import { Label } from '../forms/forms'
@@ -17,6 +17,7 @@ import isContentRegistered from '../../lib/is-content-registered'
 import Share from '../icons/share.svg'
 import ShareModal from './share-modal'
 import Tabbable from '../accessibility/tabbable'
+import { archiveModule } from '../../lib/vault'
 import { Heading1 } from '../typography'
 
 const Container = styled.div`
@@ -27,16 +28,12 @@ const BackArrow = styled(Arrow)`
   display: block;
   margin-bottom: 2rem;
 `
-const Parent = styled(Anchor)`
-  margin-bottom: 2rem;
-`
-const AuthorWithContentRegistration = styled(Anchor)`
+const Authors = styled.div`
   font-size: 1.5rem;
+  color: ${gray};
 `
 const AuthorWithoutContentRegistration = styled.span`
-  color: ${gray};
   display: inline-block;
-  font-size: 1.5rem;
   margin-bottom: 2px;
 `
 const Description = styled.div`
@@ -71,6 +68,10 @@ const File = styled.div`
 const Actions = styled.div`
   margin-top: 2rem;
 `
+const StyledHeading1 = styled(Heading1)`
+  font-size: 2rem;
+  margin-top: 2rem;
+`
 
 const ExportZip = ({ directory }) => (
   <Button
@@ -94,20 +95,13 @@ const ExportZip = ({ directory }) => (
   </Button>
 )
 
-const getContentDirectory = async content => {
-  const directory = `${remote.app.getPath('home')}/.p2pcommons/${encode(
-    content.rawJSON.url
-  )}`
-  try {
-    const directoryWithVersion = `${directory}+${content.metadata.version}`
-    await fs.stat(directoryWithVersion)
-    return directoryWithVersion
-  } catch (_) {
-    return directory
-  }
+const getContentDirectory = async ({ key, version }) => {
+  const directory = `${remote.app.getPath('home')}/.p2pcommons/${key}`
+  return version ? `${directory}+${version}` : directory
 }
 
-const Content = ({ p2p, content, renderRow }) => {
+const Content = ({ p2p, contentKey: key, version, renderRow }) => {
+  const [content, setContent] = useState()
   const [directory, setDirectory] = useState()
   const [authors, setAuthors] = useState()
   const [parents, setParents] = useState()
@@ -122,11 +116,17 @@ const Content = ({ p2p, content, renderRow }) => {
 
   useEffect(() => {
     ;(async () => {
-      const directory = await getContentDirectory(content)
+      setContent(await p2p.clone(key, version, /* download */ true))
+    })()
+  }, [key, version])
+
+  useEffect(() => {
+    ;(async () => {
+      const directory = await getContentDirectory({ key, version })
       setDirectory(directory)
       await fetchFiles(directory)
     })()
-  }, [content.rawJSON.url])
+  }, [key, version])
 
   const fetchAuthors = async () => {
     const authors = await Promise.all(
@@ -139,9 +139,10 @@ const Content = ({ p2p, content, renderRow }) => {
 
   const fetchParents = async () => {
     const parents = await Promise.all(
-      content.rawJSON.parents.map(url =>
-        p2p.clone(encode(url.split('+')[0]), null, /* download */ false)
-      )
+      content.rawJSON.parents.map(url => {
+        const [key, version] = url.split('+')
+        return p2p.clone(encode(key), version, /* download */ false)
+      })
     )
     setParents(parents)
   }
@@ -165,19 +166,20 @@ const Content = ({ p2p, content, renderRow }) => {
   }
 
   useEffect(() => {
+    if (!content) return
     fetchAuthors()
     fetchParents()
-  }, [content.rawJSON.url])
+  }, [content])
 
   useEffect(() => {
-    if (authors) fetchCanRegisterOrDeregisterContent()
+    if (!authors) return
+    fetchCanRegisterOrDeregisterContent()
   }, [authors])
 
-  const supportingFiles = files
-    ? files.filter(file => file !== content.rawJSON.main)
-    : []
+  const supportingFiles =
+    files && content ? files.filter(file => file !== content.rawJSON.main) : []
 
-  return authors && parents ? (
+  return content && authors && parents ? (
     <>
       {isSharing && (
         <ShareModal
@@ -205,39 +207,56 @@ const Content = ({ p2p, content, renderRow }) => {
             Open folder
           </Button>
           <ExportZip directory={directory} />
+          {canRegisterContent && content.metadata.isWritable && (
+            <Button
+              type='button'
+              color={green}
+              onClick={() => {
+                history.push(
+                  `/edit/${encode(content.rawJSON.url)}/${
+                    content.metadata.version
+                  }`
+                )
+              }}
+            >
+              Edit content
+            </Button>
+          )}
         </>
       )}
       <Container>
         <Tabbable component={BackArrow} onClick={() => history.go(-1)} />
-        <div>
-          {parents.map(parent => (
-            <Link
-              component={Parent}
-              key={`${parent.rawJSON.url}+${parent.rawJSON.version}`}
-              to={`/profiles/${encode(parent.rawJSON.authors[0])}/${encode(
-                parent.rawJSON.url
-              )}`}
-            >
-              {parent.rawJSON.title}
-            </Link>
+        {parents.map(parent => (
+          <Link
+            component={Anchor}
+            key={`${parent.rawJSON.url}+${parent.rawJSON.version}`}
+            to={`/profiles/${encode(parent.rawJSON.authors[0])}/${encode(
+              parent.rawJSON.url
+            )}/${parent.metadata.version}`}
+          >
+            {parent.rawJSON.title}
+          </Link>
+        ))}
+        <StyledHeading1>{content.rawJSON.title}</StyledHeading1>
+        <Authors>
+          {authors.map((author, i) => (
+            <Fragment key={author.rawJSON.url}>
+              {i > 0 && ', '}
+              {isContentRegistered(content, author) ? (
+                <Link
+                  component={Anchor}
+                  to={`/profiles/${encode(author.rawJSON.url)}`}
+                >
+                  {author.rawJSON.title}
+                </Link>
+              ) : (
+                <AuthorWithoutContentRegistration key={author.rawJSON.url}>
+                  {author.rawJSON.title}
+                </AuthorWithoutContentRegistration>
+              )}
+            </Fragment>
           ))}
-        </div>
-        <Heading1>{content.rawJSON.title}</Heading1>
-        {authors.map(author => {
-          return isContentRegistered(content, author) ? (
-            <Link
-              component={AuthorWithContentRegistration}
-              key={author.rawJSON.url}
-              to={`/profiles/${encode(author.rawJSON.url)}`}
-            >
-              {author.rawJSON.title}
-            </Link>
-          ) : (
-            <AuthorWithoutContentRegistration key={author.rawJSON.url}>
-              {author.rawJSON.title}
-            </AuthorWithoutContentRegistration>
-          )
-        })}
+        </Authors>
         <Description>{newlinesToBr(content.rawJSON.description)}</Description>
         <div>
           <Label>Main file</Label>
@@ -281,17 +300,23 @@ const Content = ({ p2p, content, renderRow }) => {
               onClick={async () => {
                 setIsUpdatingRegistration(true)
                 try {
+                  await p2p.refreshDrive(encode(content.rawJSON.url))
+                  const {
+                    metadata: { version }
+                  } = await p2p.get(encode(content.rawJSON.url))
                   await p2p.register(
-                    [
-                      encode(content.rawJSON.url),
-                      content.metadata.version
-                    ].join('+'),
+                    [encode(content.rawJSON.url), version].join('+'),
                     profileUrl
+                  )
+                  if (await ipcRenderer.invoke('getStoreValue', 'vault')) {
+                    await archiveModule(`${content.rawJSON.url}+${version}`)
+                  }
+                  history.replace(
+                    `/profiles/${encode(profileUrl)}/${key}/${version}`
                   )
                 } finally {
                   setIsUpdatingRegistration(false)
                 }
-                await fetchAuthors()
               }}
             >
               Add to profile
@@ -310,10 +335,10 @@ const Content = ({ p2p, content, renderRow }) => {
                     ].join('+'),
                     profileUrl
                   )
+                  history.replace(`/drafts/${key}`)
                 } finally {
                   setIsUpdatingRegistration(false)
                 }
-                await fetchAuthors()
               }}
             >
               Remove from profile

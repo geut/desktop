@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, Fragment, useContext } from 'react'
 import styled, { css, keyframes } from 'styled-components'
 import Avatar from '../avatar/avatar'
 import ContentRow from '../content/row'
-import Footer from '../footer/footer'
+import Footer, { FooterAddContent } from '../footer/footer'
 import { encode } from 'dat-encoding'
 import { Title, StickyRow, TopRow, Button } from '../layout/grid'
 import { green, red, yellow, gray } from '../../lib/colors'
@@ -118,7 +118,8 @@ const StyledInput = styled(Input)`
 `
 
 const Profile = ({ p2p }) => {
-  const { key } = useParams()
+  const { url: ownProfileUrl } = useContext(ProfileContext)
+  const { key = ownProfileUrl } = useParams()
   const [profile, setProfile] = useState()
   const [contents, setContents] = useState()
   const [isEditing, setIsEditing] = useState()
@@ -129,8 +130,6 @@ const Profile = ({ p2p }) => {
   const [isSharing, setIsSharing] = useState()
   const [nameForAvatar, setNameForAvatar] = useState()
   const [ownProfile, setOwnProfile] = useState()
-  const [isFollowed, setIsFollowed] = useState()
-  const { url: ownProfileUrl } = useContext(ProfileContext)
   const titleRef = useRef()
   const descriptionRef = useRef()
 
@@ -139,7 +138,7 @@ const Profile = ({ p2p }) => {
       profile.rawJSON.contents.map(url => {
         const [key, version] = url.split('+')
         const download = true
-        return p2p.clone(encode(key), version, download)
+        return p2p.clone(encode(key), Number(version), download)
       })
     )
     contents.sort(sort)
@@ -281,6 +280,8 @@ const Profile = ({ p2p }) => {
               <Button
                 color={red}
                 onClick={() => {
+                  setNameForAvatar(profile.rawJSON.title)
+                  setIsTitleInvalid(false)
                   setIsEditing(false)
                   setIsTitleInvalid(false)
                 }}
@@ -342,20 +343,26 @@ const Profile = ({ p2p }) => {
           {contents.map((content, i) => {
             return (
               <ContentRow
-                key={content.rawJSON.url}
+                key={`${content.rawJSON.url}+${content.metadata.version}`}
                 p2p={p2p}
                 content={content}
                 to={`/profiles/${encode(profile.rawJSON.url)}/${encode(
                   content.rawJSON.url
-                )}`}
+                )}/${content.metadata.version}`}
               />
             )
           })}
           <Footer
             title={
-              contents.length
-                ? 'You’ve reached the end! ✌️'
-                : 'No content yet... 🤔'
+              <>
+                {contents.length ? (
+                  'You’ve reached the end! ✌️'
+                ) : (
+                  <>
+                    No content yet, use <FooterAddContent /> to add something!
+                  </>
+                )}
+              </>
             }
           />
         </div>

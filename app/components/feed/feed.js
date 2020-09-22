@@ -2,10 +2,9 @@ import React, { useState, useEffect, useContext } from 'react'
 import { TopRow, Title } from '../layout/grid'
 import ContentRow from '../content/row'
 import { encode } from 'dat-encoding'
-import Footer from '../footer/footer'
-import { ProfileContext, TourContext } from '../../lib/context'
-import sort from '../../lib/sort'
-import Tour from '../tour/tour'
+import Footer, { FooterAddContent, FooterSearch } from '../footer/footer'
+import { ProfileContext } from '../../lib/context'
+import sort from '../../lib/sort' 
 
 export default ({ p2p }) => {
   const [contents, setContents] = useState()
@@ -47,7 +46,7 @@ export default ({ p2p }) => {
           {contents.map((content, i) => {
             return (
               <ContentRow
-                key={content.rawJSON.url}
+                key={`${content.rawJSON.url}+${content.metadata.version}`}
                 p2p={p2p}
                 content={content}
                 to={`/contents/${encode(content.rawJSON.url)}/${
@@ -60,9 +59,14 @@ export default ({ p2p }) => {
           <Footer
             title={
               <>
-                {contents.length
-                  ? 'You’ve reached the end! ✌️'
-                  : 'Share content or follow someone to fill up your feed 🙌'}
+                {contents.length ? (
+                  'You’ve reached the end! ✌️'
+                ) : (
+                  <>
+                    Add content <FooterAddContent /> or <FooterSearch /> Find
+                    someone to follow
+                  </>
+                )}
               </>
             }
           />

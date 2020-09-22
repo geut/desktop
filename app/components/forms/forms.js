@@ -2,7 +2,6 @@ import React from 'react'
 import styled from 'styled-components'
 import { purple, black, white } from '../../lib/colors'
 import CaretDown from '../icons/caret-down-1rem.svg'
-import CaretDownLarge from '../icons/caret-down-2rem.svg'
 import { Title } from '../layout/grid'
 
 export const Label = styled.label`
@@ -38,10 +37,10 @@ const SelectElement = styled.select`
   background-color: ${black};
   color: ${white};
   border: 2px solid ${purple};
-  font-size: ${props => (props.large ? 2 : 1)}rem;
+  font-size: 1rem;
   width: 100%;
   max-width: 661px;
-  height: ${props => (props.large ? 4 : 2)}rem;
+  height: 2rem;
   border-radius: 0;
   appearance: none;
   margin-bottom: 1rem;
@@ -54,15 +53,10 @@ const SelectCaret = styled(CaretDown)`
   right: 16.37px;
   top: 5px;
 `
-const SelectCaretLarge = styled(CaretDownLarge)`
-  position: absolute;
-  right: 16.37px;
-  top: 10px;
-`
-export const Select = ({ large, ...props }) => (
+export const Select = ({ ...props }) => (
   <SelectContainer>
-    <SelectElement large={large} {...props} />
-    {large ? <SelectCaretLarge /> : <SelectCaret />}
+    <SelectElement {...props} />
+    <SelectCaret />
   </SelectContainer>
 )
 
@@ -80,4 +74,11 @@ export const Textarea = styled.textarea`
   font-family: Roboto;
   letter-spacing: inherit;
   line-height: inherit;
+`
+
+export const Checkbox = styled.input.attrs({
+  type: 'checkbox',
+  defaultChecked: true
+})`
+  margin-right: 0.5rem;
 `

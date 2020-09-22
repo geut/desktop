@@ -1,13 +1,11 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import Logo from './logo.svg'
 import { white, purple, black } from '../../lib/colors'
 import { Row, Button } from '../layout/grid'
 import { NavLink, useHistory, Link } from 'react-router-dom'
 import AddContent from '../icons/add-content.svg'
-import Search from './search-icon-1rem.svg'
-import { encode } from 'dat-encoding'
-import { ProfileContext } from '../../lib/context'
+import Search from '../icons/search-icon-1rem.svg'
 import NetworkStatusRed from './network-status-red.svg'
 import NetworkStatusYellow from './network-status-yellow.svg'
 import NetworkStatusGreen from './network-status-green.svg'
@@ -26,6 +24,8 @@ const Container = styled.div`
 const StyledLogo = styled(Logo)`
   margin-bottom: 2rem;
   -webkit-app-region: drag;
+  position: relative;
+  z-index: 1;
 `
 const StyledRow = styled(Row)`
   text-align: left;
@@ -108,14 +108,15 @@ const ButtonNavLink = ({ history, to, ...props }) => (
   />
 )
 const getNetworkStatus = async p2p => {
-  if (!p2p.networker || !(await isOnline())) return 'red'
+  if (!p2p.networker || !p2p.networker.swarm || !(await isOnline())) {
+    return 'red'
+  }
   if (!p2p.networker.swarm.holepunchable()) return 'yellow'
   return 'green'
 }
 
 const Menu = ({ p2p, onFind }) => {
   const history = useHistory()
-  const { url: profileUrl } = useContext(ProfileContext)
   const [networkStatus, setNetworkStatus] = useState('red')
 
   useEffect(() => {
@@ -162,11 +163,7 @@ const Menu = ({ p2p, onFind }) => {
         <ButtonNavLink to='/drafts' history={history} id='tour-menu-drafts'>
           Drafts
         </ButtonNavLink>
-        <ButtonNavLink
-          to={`/profiles/${profileUrl ? encode(profileUrl) : ''}`}
-          history={history}
-          id='tour-menu-profile'
-        >
+        <ButtonNavLink to='/profile' history={history}>
           Profile
         </ButtonNavLink>
         <ButtonNavLink

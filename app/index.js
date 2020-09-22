@@ -7,6 +7,7 @@ import Welcome from './components/welcome/welcome'
 import Drafts from './components/drafts/drafts'
 import ShowDraft from './components/drafts/show'
 import CreateContent from './components/content/create'
+import EditContent from './components/content/edit'
 import Following from './components/profile/following'
 import ShowContent from './components/content/show'
 import Feed from './components/feed/feed'
@@ -15,6 +16,7 @@ import { HashRouter as Router, Switch, Route } from 'react-router-dom'
 import { remote, ipcRenderer } from 'electron'
 import { ProfileContext, TourContext } from './lib/context'
 import FindModal from './components/modal/find-modal'
+import { archiveModule } from './lib/vault'
 
 const showError = err => {
   window.alert(
@@ -101,12 +103,14 @@ ipcRenderer.on('export graph', async () => {
   ipcRenderer.send('export graph', graph)
 })
 
-const Container = ({ children, onFind }) => (
-  <Router>
-    <Layout onFind={onFind} p2p={p2p}>
-      {children}
-    </Layout>
-  </Router>
+const Container = ({ children, onFind, profileUrl }) => (
+  <ProfileContext.Provider value={{ url: profileUrl }}>
+    <Router>
+      <Layout onFind={onFind} p2p={p2p}>
+        {children}
+      </Layout>
+    </Router>
+  </ProfileContext.Provider>
 )
 
 const lastArg = remote.process.argv[remote.process.argv.length - 1]
@@ -115,11 +119,16 @@ const App = () => {
   const [profileUrl, setProfileUrl] = useState()
   const [loading, setLoading] = useState(true)
   const [findModalUrl, setFindModalUrl] = useState(
-    /^hyper/.test(lastArg) ? lastArg : null
+    /^hypergraph:\/\//.test(lastArg) ? lastArg : null
   )
   const [isFinding, setIsFinding] = useState(Boolean(findModalUrl))
-  const [isTourOpen, setIsTourOpen] = useState(false)
-  const [isModalTourOpen, setIsModalTourOpen] = useState(false)
+  const [showWelcome, setShowWelcome] = useState()
+
+  useEffect(() => {
+    ;(async () => {
+      setShowWelcome(await ipcRenderer.invoke('getStoreValue', 'welcome'))
+    })()
+  }, [])
 
   useEffect(() => {
     ;(async () => {
@@ -127,9 +136,11 @@ const App = () => {
       const profile = profiles.find(profile => profile.metadata.isWritable)
       if (profile) {
         setProfileUrl(profile.rawJSON.url)
-        window.Chatra('updateIntegrationData', {
-          name: profile.rawJSON.title
-        })
+        if (window.Chatra) {
+          window.Chatra('updateIntegrationData', {
+            name: profile.rawJSON.title
+          })
+        }
       }
       setLoading(false)
     })()
@@ -145,67 +156,83 @@ const App = () => {
     })
   }, [])
 
+  useEffect(() => {
+    const onChange = async (_, isEnabled) => {
+      if (!isEnabled || !profileUrl) return
+      const profile = await p2p.get(profileUrl)
+      const urls = [
+        profile.rawJSON.url,
+        ...profile.rawJSON.contents.map(url => `hyper://${url}`)
+      ]
+      console.log(`archiving ${urls.length} modules`)
+      for (const url of urls) await archiveModule(url)
+    }
+    ipcRenderer.on('vault', onChange)
+    return () => {
+      ipcRenderer.removeListener('vault', onChange)
+    }
+  }, [profileUrl])
+
+  useEffect(() => {
+    ipcRenderer.on('welcome', (_, showWelcome) => {
+      setShowWelcome(showWelcome)
+    })
+  }, [])
+
   if (loading) return <Container />
-  if (!profileUrl) {
+  if (!profileUrl || showWelcome) {
     return (
-      <Container>
-        <Welcome
-          p2p={p2p}
-          setProfileUrl={setProfileUrl}
-          setIsTourOpen={setIsTourOpen}
-        />
+      <Container profileUrl={profileUrl}>
+        <Welcome p2p={p2p} setProfileUrl={setProfileUrl} />
       </Container>
     )
   }
 
   return (
-    <ProfileContext.Provider value={{ url: profileUrl }}>
-      <TourContext.Provider
-        value={{
-          tour: [isTourOpen, setIsTourOpen],
-          modalTour: [isModalTourOpen, setIsModalTourOpen]
-        }}
-      >
-        <Container onFind={() => setIsFinding(true)}>
-          {isFinding && (
-            <FindModal
-              p2p={p2p}
-              onClose={() => {
-                setIsFinding(false)
-                setFindModalUrl()
-              }}
-              prefilledUrl={findModalUrl}
-            />
-          )}
-          <Switch>
-            <Route path='/' exact>
-              <Feed p2p={p2p} />
-            </Route>
-            <Route path='/drafts' exact>
-              <Drafts p2p={p2p} />
-            </Route>
-            <Route path='/drafts/:key'>
-              <ShowDraft p2p={p2p} />
-            </Route>
-            <Route path='/create/:parentUrl?'>
-              <CreateContent p2p={p2p} />
-            </Route>
-            <Route path='/profiles/:profileKey/:contentKey'>
-              <ProfileContent p2p={p2p} />
-            </Route>
-            <Route path='/following'>
-              <Following p2p={p2p} />
-            </Route>
-            <Route path='/profiles/:key'>
-              <Profile p2p={p2p} />
-            </Route>
-            <Route path='/contents/:key/:version?'>
-              <ShowContent p2p={p2p} />
-            </Route>
-          </Switch>
-        </Container>
-      </TourContext.Provider>
-    </ProfileContext.Provider>
+    <Container profileUrl={profileUrl} onFind={() => setIsFinding(true)}>
+      {isFinding && (
+        <FindModal
+          p2p={p2p}
+          onClose={() => {
+            setIsFinding(false)
+            setFindModalUrl()
+          }}
+          prefilledUrl={findModalUrl}
+        />
+      )}
+      <Switch>
+        <Route path='/' exact>
+          <Feed p2p={p2p} />
+        </Route>
+        <Route path='/drafts' exact>
+          <Drafts p2p={p2p} />
+        </Route>
+        <Route path='/drafts/:key'>
+          <ShowDraft p2p={p2p} />
+        </Route>
+        <Route path='/create/:parentUrl?'>
+          <CreateContent p2p={p2p} />
+        </Route>
+        <Route path='/edit/:key/:version'>
+          <EditContent p2p={p2p} />
+        </Route>
+        <Route path='/profiles/:profileKey/:contentKey/:version'>
+          <ProfileContent p2p={p2p} />
+        </Route>
+        <Route path='/profiles/:key'>
+          <Profile p2p={p2p} />
+        </Route>
+        <Route path='/profile'>
+          <Profile p2p={p2p} />
+        </Route>
+        <Route path='/following'>
+          <Following p2p={p2p} />
+        </Route>
+        <Route path='/contents/:key/:version?'>
+          <ShowContent p2p={p2p} />
+        </Route>
+      </Switch>
+    </Container>
   )
 }
 
