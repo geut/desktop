@@ -5,9 +5,13 @@ import { encode } from 'dat-encoding'
 import Footer, { FooterAddContent, FooterSearch } from '../footer/footer'
 import { ProfileContext } from '../../lib/context'
 import sort from '../../lib/sort'
+import Loading, { LoadingFlex } from '../loading/loading'
+import Tour from '../tour/tour'
+import { ipcRenderer } from 'electron'
 
 export default ({ p2p }) => {
   const [contents, setContents] = useState()
+  const [isTourOpen, setIsTourOpen] = useState()
   const { url: profileUrl } = useContext(ProfileContext)
 
   useEffect(() => {
@@ -17,18 +21,29 @@ export default ({ p2p }) => {
         profile.rawJSON.follows.map(url => p2p.clone(encode(url)))
       )
       const profiles = [profile, ...follows]
+      const contentUrls = [
+        ...new Set(profiles.map(profile => profile.rawJSON.contents).flat())
+      ]
       const contents = await Promise.all(
-        profiles.map(profile =>
-          Promise.all(
-            profile.rawJSON.contents.map(url => {
-              const [key, version] = url.split('+')
-              return p2p.clone(encode(key), version)
-            })
-          )
-        )
+        contentUrls.map(url => {
+          const [key, version] = url.split('+')
+          return p2p.clone(encode(key), version)
+        })
       )
       setContents(contents.flat().sort(sort))
     })()
+  }, [])
+
+  useEffect(() => {
+    ;(async () => {
+      setIsTourOpen(await ipcRenderer.invoke('getStoreValue', 'tour', true))
+    })()
+  }, [])
+
+  useEffect(() => {
+    const onTour = (_, isTourOpen) => setIsTourOpen(isTourOpen)
+    ipcRenderer.on('tour', onTour)
+    return () => ipcRenderer.removeListener('tour', onTour)
   }, [])
 
   return (
@@ -36,7 +51,7 @@ export default ({ p2p }) => {
       <TopRow>
         <Title>Feed</Title>
       </TopRow>
-      {contents && (
+      {contents ? (
         <>
           {contents.map(content => {
             return (
@@ -47,6 +62,7 @@ export default ({ p2p }) => {
                 to={`/contents/${encode(content.rawJSON.url)}/${
                   content.metadata.version
                 }`}
+                isRegistered
               />
             )
           })}
@@ -65,6 +81,16 @@ export default ({ p2p }) => {
             }
           />
         </>
+      ) : (
+        <LoadingFlex>
+          <Loading />
+        </LoadingFlex>
+      )}
+      {isTourOpen && (
+        <Tour
+          isOpen={isTourOpen}
+          onClose={() => ipcRenderer.invoke('setStoreValue', 'tour', false)}
+        />
       )}
     </>
   )

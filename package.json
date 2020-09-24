@@ -2,7 +2,7 @@
   "name": "hypergraph-desktop",
   "productName": "Hypergraph (Beta)",
   "author": "Liberate Science GmbH",
-  "version": "0.6.0",
+  "version": "0.6.2",
   "description": "Hypergraph Desktop app",
   "license": "MIT",
   "repository": "hypergraph-xyz/desktop",
@@ -27,7 +27,9 @@
     "del": "^5.1.0",
     "electron-debug": "^3.1.0",
     "electron-devtools-installer": "^3.1.0",
+    "electron-log": "^4.2.4",
     "electron-store": "^5.2.0",
+    "electron-updater": "^4.3.5",
     "focus-visible": "^5.1.0",
     "html-webpack-plugin": "^3.2.0",
     "is-online": "^8.4.0",
@@ -38,6 +40,7 @@
     "react-helmet": "^6.1.0",
     "react-router-dom": "^5.2.0",
     "react-spring": "^8.0.27",
+    "reactour": "^1.18.0",
     "styled-components": "^5.1.1"
   },
   "devDependencies": {
