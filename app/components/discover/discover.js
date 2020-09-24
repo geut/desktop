@@ -4,6 +4,7 @@ import ContentRow from '../content/row'
 import { encode } from 'dat-encoding'
 import Footer, { FooterAddContent, FooterSearch } from '../footer/footer'
 import fetch from 'node-fetch'
+import Loading, { LoadingFlex } from '../loading/loading'
 
 export default ({ p2p }) => {
   const [contents, setContents] = useState()
@@ -40,7 +41,7 @@ export default ({ p2p }) => {
       <TopRow>
         <Title>Discover</Title>
       </TopRow>
-      {contents && (
+      {contents ? (
         <>
           {contents.map(content => {
             return (
@@ -69,6 +70,10 @@ export default ({ p2p }) => {
             }
           />
         </>
+      ) : (
+        <LoadingFlex>
+          <Loading />
+        </LoadingFlex>
       )}
     </>
   )
