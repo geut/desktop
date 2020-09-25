@@ -29,8 +29,8 @@ export default ({ p2p }) => {
       for (const url of contentUrls) {
         try {
           const [key, version] = url.split('+')
-          const c = await p2p.clone(encode(key), version)
-          contents.push(c)
+          const content = await p2p.clone(encode(key), version)
+          contents.push(content)
         } catch (err) {
           console.error(err)
         }
